@@ -10,6 +10,7 @@ describe Grom::Base do
       expect(dummy.surname).to eq 'Targaryen'
       expect(dummy.middle_name).to eq 'Khaleesi'
       expect(dummy.date_of_birth).to eq '1947-06-29'
+      expect(dummy.gender).to eq 'female'
     end
   end
 
