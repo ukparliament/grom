@@ -76,3 +76,5 @@ RDF::NTriples::Reader.new(NO_TYPE_PARTY_MEMBERSHIP_TTL) do |reader|
         NO_TYPE_PARTY_MEMBERSHIP_GRAPH << statement
     end
 end
+
+CAT_ONE_TTL = "<http://id.example.com/123> <http://id.example.com/schema/name> \"Bob\""

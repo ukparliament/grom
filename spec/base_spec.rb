@@ -41,6 +41,14 @@ describe Grom::Base do
     end
   end
 
+  describe '#has_one' do
+    it 'should create a has_one association for a given class' do
+      dummy_person = DummyPerson.find(PERSON_ONE_GRAPH)
+      expect(dummy_person).to respond_to(:dummy_cat)
+      expect(dummy_person.dummy_cat.name).to eq 'Bob'
+    end
+  end
+
   describe '#has_many_through' do
     it 'should create a has_many_through association for a given class and be able to call the through_class on the association' do
         dummy_person = DummyPerson.find(PERSON_ONE_GRAPH)
