@@ -35,18 +35,28 @@ module Grom
       self.class_eval("def #{association}; #{create_class_name(association)}.has_many_through_query(self, #{create_class_name(through_association[:via])}.new({}).class.name); end")
     end
 
+    def self.has_one(association)
+      self.class_eval("def #{association}(optional=nil); #{create_class_name(association)}.has_one_query(self, optional); end")
+    end
+
     def self.has_many_query(owner_object, optional=nil)
-      endpoint_url = url_builder(owner_object, self.name, optional)
+      endpoint_url = url_builder(owner_object, self.name, { optional: optional })
       graph_data = get_graph_data(endpoint_url)
       self.all(graph_data)
     end
 
+    def self.has_one_query(owner_object, optional=nil)
+      endpoint_url = url_builder(owner_object, self.name, { optional: optional, single: true })
+      graph_data = get_graph_data(endpoint_url)
+      self.find(graph_data)
+    end
+
     def self.has_many_through_query(owner_object, through_class, optional=nil)
-      endpoint_url = url_builder(owner_object, self.name, optional)
+      endpoint_url = url_builder(owner_object, self.name, { optional: optional })
       graph_data = get_graph_data(endpoint_url)
       separated_graphs = split_by_subject(graph_data, self.name)
       associated_objects_array = self.all(separated_graphs[:associated_class_graph])
-      through_property_plural = create_property_name(through_class)
+      through_property_plural = create_plural_property_name(through_class)
       self.through_getter_setter(through_property_plural)
       associated_objects_array.each do |associated_object|
         through_class_array = get_through_graphs(separated_graphs[:through_graph], associated_object.id).map do |graph|
