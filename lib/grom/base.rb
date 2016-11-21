@@ -1,4 +1,5 @@
 require 'grom'
+require 'uri'
 require 'active_support/all'
 require_relative '../../lib/grom/helpers'
 
@@ -11,6 +12,7 @@ module Grom
     def initialize(attributes)
       attributes.each do |k, v|
         translated_key = self.class.property_translator[k]
+        v = self.class.create_property_name(self.class.get_id(v)) if (v =~ URI::regexp) == 0
         instance_variable_set("@#{translated_key}", v) unless v.nil?
         self.class.send(:attr_reader, translated_key)
       end
