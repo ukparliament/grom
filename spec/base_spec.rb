@@ -6,6 +6,7 @@ describe Grom::Base do
     it 'should return an instance of the class that it is called from - DummyPerson' do
       dummy = DummyPerson.find('1')
       expect(dummy).to be_a DummyPerson
+      expect(dummy).to respond_to(:graph)
     end
   end
 
