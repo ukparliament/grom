@@ -30,11 +30,13 @@ module Grom
 
     def statements_mapper_by_subject(graph)
       graph.subjects.map do |subject|
+        individual_graph = RDF::Graph.new
         pattern = RDF::Query::Pattern.new(subject, :predicate, :object)
         attributes = graph.query(pattern).map do |statement|
+          individual_graph << statement
           get_object_and_predicate(statement)
         end.reduce({}, :merge)
-        attributes.merge({id: get_id(subject), graph: graph})
+        attributes.merge({id: get_id(subject), graph: individual_graph })
       end
     end
 
