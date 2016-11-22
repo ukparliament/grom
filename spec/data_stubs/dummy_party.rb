@@ -2,7 +2,7 @@ class DummyParty < Grom::Base
   def self.property_translator
     {
         id: 'id',
-        partyName: 'name',
+        partyName: 'name'
     }
   end
 end
