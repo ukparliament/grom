@@ -10,6 +10,8 @@ module Grom
     extend ActiveSupport::Inflector
 
     def initialize(attributes)
+      instance_variable_set("@graph", attributes[:graph])
+      attributes.delete(:graph)
       attributes.each do |k, v|
         translated_key = self.class.property_translator[k]
         v = self.class.create_property_name(self.class.get_id(v)) if (v =~ URI::regexp) == 0
@@ -76,7 +78,7 @@ module Grom
     end
 
     def self.object_array_maker(graph_data)
-      self.statements_mapper_by_subject(graph_data).map do |data|
+      objects = self.statements_mapper_by_subject(graph_data).map do |data|
         self.new(data)
       end
     end

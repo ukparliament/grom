@@ -34,7 +34,7 @@ module Grom
         attributes = graph.query(pattern).map do |statement|
           get_object_and_predicate(statement)
         end.reduce({}, :merge)
-        attributes.merge({id: get_id(subject)})
+        attributes.merge({id: get_id(subject), graph: graph})
       end
     end
 
