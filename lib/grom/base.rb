@@ -10,6 +10,8 @@ module Grom
     extend ActiveSupport::Inflector
 
     def initialize(attributes)
+      instance_variable_set("@graph", attributes[:graph])
+      attributes.delete(:graph)
       attributes.each do |k, v|
         translated_key = self.class.property_translator[k]
         v = self.class.create_property_name(self.class.get_id(v)) if (v =~ URI::regexp) == 0
@@ -19,13 +21,13 @@ module Grom
     end
 
     def self.find(id)
-      endpoint_url = "#{base_url_builder(self.name, id)}.ttl"
+      endpoint_url = "#{find_base_url_builder(self.name, id)}.ttl"
       graph_data = get_graph_data(endpoint_url)
       self.object_single_maker(graph_data)
     end
 
-    def self.all
-      endpoint_url = "#{base_url_builder(self.name)}.ttl"
+    def self.all(options=nil)
+      endpoint_url = "#{all_base_url_builder(self.name, options)}.ttl"
       graph_data = get_graph_data(endpoint_url)
       self.object_array_maker(graph_data)
     end
@@ -44,19 +46,19 @@ module Grom
     end
 
     def self.has_many_query(owner_object, optional=nil)
-      endpoint_url = url_builder(owner_object, self.name, { optional: optional })
+      endpoint_url = associations_url_builder(owner_object, self.name, {optional: optional })
       graph_data = get_graph_data(endpoint_url)
       self.object_array_maker(graph_data)
     end
 
     def self.has_one_query(owner_object, optional=nil)
-      endpoint_url = url_builder(owner_object, self.name, { optional: optional, single: true })
+      endpoint_url = associations_url_builder(owner_object, self.name, {optional: optional, single: true })
       graph_data = get_graph_data(endpoint_url)
       self.object_single_maker(graph_data)
     end
 
     def self.has_many_through_query(owner_object, through_class, optional=nil)
-      endpoint_url = url_builder(owner_object, self.name, { optional: optional })
+      endpoint_url = associations_url_builder(owner_object, self.name, {optional: optional })
       graph_data = get_graph_data(endpoint_url)
       separated_graphs = split_by_subject(graph_data, self.name)
       associated_objects_array = self.object_array_maker(separated_graphs[:associated_class_graph])
@@ -76,7 +78,7 @@ module Grom
     end
 
     def self.object_array_maker(graph_data)
-      self.statements_mapper_by_subject(graph_data).map do |data|
+      objects = self.statements_mapper_by_subject(graph_data).map do |data|
         self.new(data)
       end
     end

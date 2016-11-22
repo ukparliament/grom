@@ -3,16 +3,23 @@ require 'grom'
 module Grom
   module Helpers
 
-    def url_builder(owner_object, associated_class_name, options={})
+    def associations_url_builder(owner_object, associated_class_name, options={})
       id = owner_object.id
       associated_class_name = options[:single].nil? ? create_plural_property_name(associated_class_name) : create_property_name(associated_class_name)
-      endpoint = "#{base_url_builder(owner_object.class.name, id)}/#{associated_class_name}"
+      endpoint = "#{find_base_url_builder(owner_object.class.name, id)}/#{associated_class_name}"
       endpoint += options[:optional].nil? ? '.ttl' : "/#{options[:optional]}.ttl"
     end
 
-    def base_url_builder(class_name, id=nil)
+    def find_base_url_builder(class_name, id)
+      "#{API_ENDPOINT}/#{create_plural_property_name(class_name)}/#{id}"
+    end
+
+    def all_base_url_builder(class_name, *options)
       endpoint = "#{API_ENDPOINT}/#{create_plural_property_name(class_name)}"
-      endpoint += id.nil? ? "" : "/#{id}"
+        options.each do |option|
+          endpoint += "/#{option}" unless option.nil?
+        end
+      endpoint
     end
 
     def create_class_name(plural_name)

@@ -4,35 +4,42 @@ describe Grom::Helpers do
 
   let(:extended_class) { Class.new { extend Grom::Helpers } }
 
-  describe '#url_builder' do
+  describe '#associations_url_builder' do
     it 'should return an endpoint when given a class and an associated class' do
       dummy = DummyPerson.find('1')
-      url = extended_class.url_builder(dummy, "Party", {})
+      url = extended_class.associations_url_builder(dummy, "Party", {})
       expect(url).to eq "#{API_ENDPOINT}/dummy_people/1/parties.ttl"
     end
 
     it 'should return an endpoint when given a class, an associated class and an options hash with optional set' do
       dummy = DummyPerson.find('1')
-      url = extended_class.url_builder(dummy, "Party", { optional: "current" })
+      url = extended_class.associations_url_builder(dummy, "Party", {optional: "current" })
       expect(url).to eq "#{API_ENDPOINT}/dummy_people/1/parties/current.ttl"
     end
 
     it 'should return an endpoint when given a class, an associated class and an options hash with single set to true' do
       dummy = DummyPerson.find('1')
-      url = extended_class.url_builder(dummy, "Party", { single: true })
+      url = extended_class.associations_url_builder(dummy, "Party", {single: true })
       expect(url).to eq "#{API_ENDPOINT}/dummy_people/1/party.ttl"
     end
   end
 
-  describe '#base_url_builder' do
-    it 'should return a url with the api_endpoint and the pluralized, underscored and downcased name of the class when you do not prvodie an id' do
-      url = extended_class.base_url_builder("ContactPerson")
+  describe '#find_base_url_builder' do
+    it 'should return a url with the api_endpoint and the pluralized, underscored and downcased name of the class and an id when provided' do
+      url = extended_class.find_base_url_builder("ContactPerson", "1")
+      expect(url).to eq "#{API_ENDPOINT}/contact_people/1"
+    end
+  end
+
+  describe '#all_base_url_builder' do
+    it 'should return a url with the api_endpoint and the pluralized, underscored and downcased name of the class' do
+      url = extended_class.all_base_url_builder("ContactPerson")
       expect(url).to eq "#{API_ENDPOINT}/contact_people"
     end
 
-    it 'should return a url with the api_endpoint and the pluralized, underscored and downcased name of the class and an id when provided' do
-      url = extended_class.base_url_builder("ContactPerson", "1")
-      expect(url).to eq "#{API_ENDPOINT}/contact_people/1"
+    it 'should return a url with the api_endpoint and the pluralized, underscored and downcased name of the class and given optionals' do
+      url = extended_class.all_base_url_builder("ContactPerson", "members", "current")
+      expect(url).to eq "#{API_ENDPOINT}/contact_people/members/current"
     end
   end
 

@@ -17,8 +17,10 @@ describe Grom::GraphMapper do
 
   describe '#statements_mapper_by_subject' do
     it 'should return a hash with the mapped predicates and the respective objects from a graph' do
-      expect(extended_class.statements_mapper_by_subject(PEOPLE_GRAPH)).to include(PEOPLE_HASH[0])
-      expect(extended_class.statements_mapper_by_subject(PEOPLE_GRAPH)).to include(PEOPLE_HASH[1])
+      arya = extended_class.statements_mapper_by_subject(PEOPLE_GRAPH).select{ |o| o[:id] == '2' }.first
+      expect(arya[:forename]).to eq 'Arya'
+      surname_pattern = RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/surname"), :object)
+      expect(arya[:graph].query(surname_pattern).first_object.to_s).to eq 'Stark'
     end
   end
 

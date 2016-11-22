@@ -16,6 +16,13 @@ describe Grom::Base do
       expect(dummies[0]).to be_a DummyPerson
       expect(dummies[1]).to be_a DummyPerson
     end
+
+    it 'given an optional argument, should return an array of two objects of type DummyPerson' do
+      dummies = DummyPerson.all('current')
+      expect(dummies.count).to eq 2
+      expect(dummies[0]).to be_a DummyPerson
+      expect(dummies[1]).to be_a DummyPerson
+    end
   end
 
   describe '#object_array_maker' do
