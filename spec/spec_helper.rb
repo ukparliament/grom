@@ -59,6 +59,14 @@ RSpec.configure do |config|
         with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Host'=>'example.com', 'User-Agent'=>'Ruby'}).
         to_return(:status => 200, :body => CAT_ONE_TTL, :headers => {})
 
+    stub_request(:get, "http://example.com/dummy_people.ttl").
+        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Host'=>'example.com', 'User-Agent'=>'Ruby'}).
+        to_return(:status => 200, :body => PEOPLE_TTL, :headers => {})
+
+    stub_request(:get, "http://example.com/dummy_people/1.ttl").
+        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Host'=>'example.com', 'User-Agent'=>'Ruby'}).
+        to_return(:status => 200, :body => PERSON_ONE_TTL, :headers => {})
+
   end
 
   # rspec-mocks config goes here. You can use an alternate test double

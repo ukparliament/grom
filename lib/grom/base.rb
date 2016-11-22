@@ -18,14 +18,16 @@ module Grom
       end
     end
 
-    def self.find(graph)
-      self.all(graph).first
+    def self.find(id)
+      endpoint_url = "#{base_url_builder(self.name, id)}.ttl"
+      graph_data = get_graph_data(endpoint_url)
+      self.object_single_maker(graph_data)
     end
 
-    def self.all(graph)
-      self.statements_mapper_by_subject(graph).map do |data|
-        self.new(data)
-      end
+    def self.all
+      endpoint_url = "#{base_url_builder(self.name)}.ttl"
+      graph_data = get_graph_data(endpoint_url)
+      self.object_array_maker(graph_data)
     end
 
     def self.has_many(association)
@@ -44,25 +46,25 @@ module Grom
     def self.has_many_query(owner_object, optional=nil)
       endpoint_url = url_builder(owner_object, self.name, { optional: optional })
       graph_data = get_graph_data(endpoint_url)
-      self.all(graph_data)
+      self.object_array_maker(graph_data)
     end
 
     def self.has_one_query(owner_object, optional=nil)
       endpoint_url = url_builder(owner_object, self.name, { optional: optional, single: true })
       graph_data = get_graph_data(endpoint_url)
-      self.find(graph_data)
+      self.object_single_maker(graph_data)
     end
 
     def self.has_many_through_query(owner_object, through_class, optional=nil)
       endpoint_url = url_builder(owner_object, self.name, { optional: optional })
       graph_data = get_graph_data(endpoint_url)
       separated_graphs = split_by_subject(graph_data, self.name)
-      associated_objects_array = self.all(separated_graphs[:associated_class_graph])
+      associated_objects_array = self.object_array_maker(separated_graphs[:associated_class_graph])
       through_property_plural = create_plural_property_name(through_class)
       self.through_getter_setter(through_property_plural)
       associated_objects_array.each do |associated_object|
         through_class_array = get_through_graphs(separated_graphs[:through_graph], associated_object.id).map do |graph|
-          through_class.constantize.find(graph)
+          through_class.constantize.object_single_maker(graph)
         end
         associated_object.send((through_property_plural + '=').to_sym, through_class_array)
       end
@@ -71,6 +73,16 @@ module Grom
     def self.through_getter_setter(through_property_plural)
       self.class_eval("def #{through_property_plural}=(array); @#{through_property_plural} = array; end")
       self.class_eval("def #{through_property_plural}; @#{through_property_plural}; end")
+    end
+
+    def self.object_array_maker(graph_data)
+      self.statements_mapper_by_subject(graph_data).map do |data|
+        self.new(data)
+      end
+    end
+
+    def self.object_single_maker(graph_data)
+      self.object_array_maker(graph_data).first
     end
 
   end
