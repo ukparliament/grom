@@ -11,6 +11,7 @@ module Grom
 
     def initialize(attributes)
       instance_variable_set("@graph", attributes[:graph])
+      self.class.send(:attr_reader, "graph")
       attributes.delete(:graph)
       attributes.each do |k, v|
         translated_key = self.class.property_translator[k]
