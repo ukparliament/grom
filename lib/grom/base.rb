@@ -27,8 +27,8 @@ module Grom
       self.object_single_maker(graph_data)
     end
 
-    def self.all(options=nil)
-      endpoint_url = "#{all_base_url_builder(self.name, options)}.ttl"
+    def self.all(*options)
+      endpoint_url = "#{all_base_url_builder(self.name, *options)}.ttl"
       graph_data = get_graph_data(endpoint_url)
       self.object_array_maker(graph_data)
     end
