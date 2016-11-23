@@ -25,6 +25,13 @@ describe Grom::Base do
       expect(dummy_people_current[0]).to be_a DummyPerson
       expect(dummy_people_current[1]).to be_a DummyPerson
     end
+
+    it 'given more than one optional argument, should still return an array of objects according to what the endpoint returns' do
+      dummy_members_current_banana = DummyPerson.all('members', 'current', 'banana')
+      expect(dummy_members_current_banana.count).to eq 2
+      expect(dummy_members_current_banana[0]).to be_a DummyPerson
+      expect(dummy_members_current_banana[1]).to be_a DummyPerson
+    end
   end
 
   describe '#object_array_maker' do
