@@ -10,8 +10,9 @@ module Grom
     extend ActiveSupport::Inflector
 
     def initialize(attributes)
-      instance_variable_set("@graph", attributes[:graph])
-      self.class.send(:attr_reader, "graph")
+      p attributes
+      ttl_graph = self.class.convert_to_ttl(attributes[:graph])
+      self.class.class_eval("def graph;  self.class.create_graph_from_ttl('#{ttl_graph}') ; end")
       attributes.delete(:graph)
       attributes.each do |k, v|
         translated_key = self.class.property_translator[k]
@@ -80,11 +81,15 @@ module Grom
 
     def self.object_array_maker(graph_data)
       self.statements_mapper_by_subject(graph_data).map do |data|
+        p data
+        p '....'
         self.new(data)
       end
     end
 
     def self.object_single_maker(graph_data)
+      p graph_data
+      p '****'
       self.object_array_maker(graph_data).first
     end
 
