@@ -79,13 +79,25 @@ module Grom
     end
 
     def self.object_array_maker(graph_data)
-      objects = self.statements_mapper_by_subject(graph_data).map do |data|
+      self.statements_mapper_by_subject(graph_data).map do |data|
         self.new(data)
       end
     end
 
     def self.object_single_maker(graph_data)
       self.object_array_maker(graph_data).first
+    end
+
+    def extract_graph
+      self.send(:remove_instance_variable, :@graph)
+    end
+
+    def self.extract_collective_graph(objects)
+      collective_graph = RDF::Graph.new
+      objects.each do |o|
+        collective_graph << o.extract_graph
+      end
+      collective_graph
     end
 
   end
