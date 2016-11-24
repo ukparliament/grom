@@ -4,11 +4,25 @@ describe Grom::Base do
 
   let(:dummy_person) { DummyPerson.find('1') }
   let(:dummy_people) { DummyPerson.all }
+  let(:surname_pattern) { RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/surname"), :object) }
+  let(:forename_pattern) { RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/forename"), :object) }
+  let(:middle_name_pattern) { RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/middleName"), :object) }
+  let(:date_of_birth_pattern) { RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/dateOfBirth"), :object) }
+  let(:gender_pattern) { RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/gender"), :object) }
 
   describe '#find' do
     it 'should return an instance of the class that it is called from - DummyPerson' do
       expect(dummy_person).to be_a DummyPerson
+    end
+
+    it 'should return an object that has a graph method with the correct statements' do
       expect(dummy_person).to respond_to(:graph)
+      graph = dummy_person.graph
+      expect(graph.query(forename_pattern).first_object.to_s).to eq 'Daenerys'
+      expect(graph.query(surname_pattern).first_object.to_s).to eq 'Targaryen'
+      expect(graph.query(middle_name_pattern).first_object.to_s).to eq 'Khaleesi'
+      expect(graph.query(date_of_birth_pattern).first_object.to_s).to eq '1947-06-29'
+      expect(graph.query(gender_pattern).first_object.to_s).to eq 'http://id.example.com/schema/Female'
     end
   end
 
@@ -17,6 +31,21 @@ describe Grom::Base do
       expect(dummy_people.count).to eq 2
       expect(dummy_people[0]).to be_a DummyPerson
       expect(dummy_people[1]).to be_a DummyPerson
+    end
+
+    it 'should return an array of two objects and each one should have a graph with the correct statements' do
+      daenerys_graph = dummy_people.select{ |o| o.id == '1' }.first.graph
+      expect(daenerys_graph.query(forename_pattern).first_object.to_s).to eq 'Daenerys'
+      expect(daenerys_graph.query(surname_pattern).first_object.to_s).to eq 'Targaryen'
+      expect(daenerys_graph.query(middle_name_pattern).first_object.to_s).to eq 'Khaleesi'
+      expect(daenerys_graph.query(date_of_birth_pattern).first_object.to_s).to eq '1947-06-29'
+      expect(daenerys_graph.query(gender_pattern).first_object.to_s).to eq 'http://id.example.com/schema/Female'
+      arya_graph = dummy_people.select{ |o| o.id == '2' }.first.graph
+      expect(arya_graph.query(forename_pattern).first_object.to_s).to eq 'Arya'
+      expect(arya_graph.query(surname_pattern).first_object.to_s).to eq 'Stark'
+      expect(arya_graph.query(middle_name_pattern).first_object.to_s).to eq 'The Blind Girl'
+      expect(arya_graph.query(date_of_birth_pattern).first_object.to_s).to eq '1954-01-12'
+      expect(arya_graph.query(gender_pattern).first_object.to_s).to eq 'http://id.example.com/schema/Female'
     end
 
     it 'given an optional argument, should return an array of two objects of type DummyPerson' do
@@ -95,10 +124,12 @@ describe Grom::Base do
   describe '#graph' do
     it 'should return the graph for the object it is called on' do
       graph = dummy_person.graph
-      surname_pattern = RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/surname"), :object)
-      forename_pattern = RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/forename"), :object)
       expect(graph.query(surname_pattern).first_object.to_s).to eq 'Targaryen'
       expect(graph.query(forename_pattern).first_object.to_s).to eq 'Daenerys'
+      expect(graph.query(middle_name_pattern).first_object.to_s).to eq 'Khaleesi'
+      expect(graph.query(date_of_birth_pattern).first_object.to_s).to eq '1947-06-29'
+      expect(graph.query(gender_pattern).first_object.to_s).to eq 'http://id.example.com/schema/Female'
+
     end
   end
 
