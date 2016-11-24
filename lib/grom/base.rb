@@ -14,6 +14,7 @@ module Grom
         ttl_graph = self.class.convert_to_ttl(attributes[:graph])
         self.instance_eval("def graph;  self.class.create_graph_from_ttl('#{ttl_graph}') ; end")
         attributes.delete(:graph)
+        attributes.delete(:type)
       end
       attributes.each do |k, v|
         translated_key = self.class.property_translator[k]

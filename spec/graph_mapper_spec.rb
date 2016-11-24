@@ -31,7 +31,7 @@ describe Grom::GraphMapper do
   end
 
 
-  describe '#get_through_graphs' do
+  xdescribe '#get_through_graphs' do
     it 'should return an array of graphs, given a graph and an id' do
       result_arr = extended_class.get_through_graphs(PARTY_MEMBERSHIP_GRAPH, '23')
       start_date_statement = RDF::Statement.new(RDF::URI.new('http://id.example.com/25'), RDF::URI.new('http://id.example.com/schema/partyMembershipStartDate'), RDF::Literal.new("1953-01-12", :datatype => RDF::XSD.date))
@@ -41,7 +41,7 @@ describe Grom::GraphMapper do
     end
   end
 
-  describe '#split_by_subject' do
+  xdescribe '#split_by_subject' do
     let(:result) { extended_class.split_by_subject(PARTY_AND_PARTY_MEMBERSHIP_ONE_GRAPH, 'DummyParty') }
     let(:type_pattern) { RDF::Query::Pattern.new(:subject, RDF.type, :object) }
 

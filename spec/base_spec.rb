@@ -105,7 +105,7 @@ describe Grom::Base do
     end
   end
 
-  describe '#has_many_through' do
+  xdescribe '#has_many_through' do
     it 'should create a has_many_through association for a given class and be able to call the through_class on the association' do
       expect(dummy_person.dummy_parties[0].name).to eq 'Targaryens'
       expect(dummy_person.dummy_parties[0].dummy_party_memberships[0].start_date).to eq '1953-01-12'
@@ -129,7 +129,6 @@ describe Grom::Base do
       expect(graph.query(middle_name_pattern).first_object.to_s).to eq 'Khaleesi'
       expect(graph.query(date_of_birth_pattern).first_object.to_s).to eq '1947-06-29'
       expect(graph.query(gender_pattern).first_object.to_s).to eq 'http://id.example.com/schema/Female'
-
     end
   end
 

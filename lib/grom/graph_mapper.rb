@@ -28,7 +28,7 @@ module Grom
     end
 
     def get_id(uri)
-      uri.to_s.split("/").last
+      uri == RDF.type.to_s ? 'type' : uri.to_s.split("/").last
     end
 
     def get_object_and_predicate(statement)
@@ -44,6 +44,7 @@ module Grom
           individual_graph << statement
           get_object_and_predicate(statement)
         end.reduce({}, :merge)
+
         attributes.merge({id: get_id(subject), graph: individual_graph })
       end
     end
@@ -52,7 +53,6 @@ module Grom
       associated_class_type_pattern = RDF::Query::Pattern.new(:subject, RDF.type, RDF::URI.new("#{DATA_URI_PREFIX}/schema/#{associated_class_name}"))
       associated_graph = RDF::Graph.new
       graph.query(associated_class_type_pattern).subjects.map do |subject|
-        graph.delete(graph.query(associated_class_type_pattern))
         subject_pattern = RDF::Query::Pattern.new(subject, :predicate, :object)
         graph.query(subject_pattern).each do |statement|
           associated_graph << statement
@@ -63,13 +63,15 @@ module Grom
     end
 
     def get_through_graphs(graph, id)
+      # connection_graph = RDF::Graph.new
       connection_pattern = RDF::Query::Pattern.new(:subject, :predicate, RDF::URI.new("#{DATA_URI_PREFIX}/#{id}"))
       graph.query(connection_pattern).subjects.map do |subject|
-        type_pattern = RDF::Query::Pattern.new(subject, RDF.type, :object)
+        connection_graph << graph.query(connection_pattern)
         graph.delete(graph.query(connection_pattern))
-        graph.delete(graph.query(type_pattern))
+
         subject_pattern = RDF::Query::Pattern.new(subject, :predicate, :object)
-        graph.query(subject_pattern)
+        # graph.query(subject_pattern)
+        { connection_graph: connection_pattern, through_graph: graph.query(subject_pattern) }
       end
      end
 
