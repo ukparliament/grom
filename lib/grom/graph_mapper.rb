@@ -9,6 +9,14 @@ module Grom
       create_graph_from_ttl(ttl_data)
     end
 
+    def convert_to_ttl(data)
+      result = ''
+      data.each_statement do |statement|
+        result << RDF::NTriples::Writer.serialize(statement)
+      end
+      result
+    end
+
     def create_graph_from_ttl(ttl_data)
       graph = RDF::Graph.new
       RDF::NTriples::Reader.new(ttl_data) do |reader|
@@ -63,7 +71,7 @@ module Grom
         subject_pattern = RDF::Query::Pattern.new(subject, :predicate, :object)
         graph.query(subject_pattern)
       end
-    end
+     end
 
   end
 end

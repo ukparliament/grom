@@ -33,5 +33,13 @@ module Grom
     def create_property_name(class_name)
       ActiveSupport::Inflector.underscore(class_name).downcase
     end
+
+    def extract_collective_graph(objects)
+      collective_graph = RDF::Graph.new
+      objects.each do |o|
+        collective_graph << o.graph
+      end
+      collective_graph
+    end
   end
 end

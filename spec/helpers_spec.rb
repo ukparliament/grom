@@ -61,4 +61,15 @@ describe Grom::Helpers do
     end
   end
 
+  describe '#extract_collective_graph' do
+    it 'should return the collective graph for the objects in the array' do
+      dummy_people = DummyPerson.all
+      collective_graph = extended_class.extract_collective_graph(dummy_people)
+      arya_surname_pattern = RDF::Query::Pattern.new(RDF::URI.new("http://id.example.com/2"), RDF::URI.new("#{DATA_URI_PREFIX}/schema/surname"), :object)
+      daenerys_surname_pattern = RDF::Query::Pattern.new(RDF::URI.new("http://id.example.com/1"), RDF::URI.new("#{DATA_URI_PREFIX}/schema/surname"), :object)
+      expect(collective_graph.query(arya_surname_pattern).first_object.to_s).to eq 'Stark'
+      expect(collective_graph.query(daenerys_surname_pattern).first_object.to_s).to eq 'Targaryen'
+    end
+  end
+
 end
