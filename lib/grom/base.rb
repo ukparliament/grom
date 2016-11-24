@@ -13,13 +13,14 @@ module Grom
       unless attributes == {}
         ttl_graph = self.class.convert_to_ttl(attributes[:graph])
         self.instance_eval("def graph;  self.class.create_graph_from_ttl('#{ttl_graph}') ; end")
-        attributes.delete(:graph)
       end
       attributes.each do |k, v|
         translated_key = self.class.property_translator[k]
         v = self.class.create_property_name(self.class.get_id(v)) if (v =~ URI::regexp) == 0
-        instance_variable_set("@#{translated_key}", v) unless v.nil?
-        self.class.send(:attr_reader, translated_key)
+        unless (v.nil? || translated_key.nil?)
+          instance_variable_set("@#{translated_key}", v)
+          self.class.send(:attr_reader, translated_key)
+        end
       end
     end
 
