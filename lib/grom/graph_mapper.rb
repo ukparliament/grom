@@ -52,26 +52,23 @@ module Grom
     def split_by_subject(graph, associated_class_name)
       associated_class_type_pattern = RDF::Query::Pattern.new(:subject, RDF.type, RDF::URI.new("#{DATA_URI_PREFIX}/schema/#{associated_class_name}"))
       associated_graph = RDF::Graph.new
+      through_graph = RDF::Graph.new
       graph.query(associated_class_type_pattern).subjects.map do |subject|
         subject_pattern = RDF::Query::Pattern.new(subject, :predicate, :object)
         graph.query(subject_pattern).each do |statement|
           associated_graph << statement
         end
-        graph.delete(graph.query(subject_pattern))
+        through_graph << graph
+        through_graph.delete(associated_graph)
       end
-      { through_graph: graph, associated_class_graph: associated_graph }
+      { through_graph: through_graph, associated_class_graph: associated_graph }
     end
 
     def get_through_graphs(graph, id)
-      # connection_graph = RDF::Graph.new
       connection_pattern = RDF::Query::Pattern.new(:subject, :predicate, RDF::URI.new("#{DATA_URI_PREFIX}/#{id}"))
       graph.query(connection_pattern).subjects.map do |subject|
-        connection_graph << graph.query(connection_pattern)
-        graph.delete(graph.query(connection_pattern))
-
         subject_pattern = RDF::Query::Pattern.new(subject, :predicate, :object)
-        # graph.query(subject_pattern)
-        { connection_graph: connection_pattern, through_graph: graph.query(subject_pattern) }
+        graph.query(subject_pattern)
       end
      end
 
