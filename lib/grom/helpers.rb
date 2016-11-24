@@ -41,5 +41,16 @@ module Grom
       end
       collective_graph
     end
+
+    def collective_through_graph(owner, association, through_property)
+      graph = owner.graph
+      association.each do |associated_object|
+        graph << associated_object.graph
+        associated_object.send(through_property).each do |through_object|
+          graph << through_object.graph
+        end
+      end
+      graph
+    end
   end
 end
