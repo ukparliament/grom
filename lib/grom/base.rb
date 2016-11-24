@@ -10,10 +10,11 @@ module Grom
     extend ActiveSupport::Inflector
 
     def initialize(attributes)
-      p attributes
-      ttl_graph = self.class.convert_to_ttl(attributes[:graph])
-      self.class.class_eval("def graph;  self.class.create_graph_from_ttl('#{ttl_graph}') ; end")
-      attributes.delete(:graph)
+      unless attributes == {}
+        ttl_graph = self.class.convert_to_ttl(attributes[:graph])
+        self.instance_eval("def graph;  self.class.create_graph_from_ttl('#{ttl_graph}') ; end")
+        attributes.delete(:graph)
+      end
       attributes.each do |k, v|
         translated_key = self.class.property_translator[k]
         v = self.class.create_property_name(self.class.get_id(v)) if (v =~ URI::regexp) == 0
@@ -81,28 +82,12 @@ module Grom
 
     def self.object_array_maker(graph_data)
       self.statements_mapper_by_subject(graph_data).map do |data|
-        p data
-        p '....'
         self.new(data)
       end
     end
 
     def self.object_single_maker(graph_data)
-      p graph_data
-      p '****'
       self.object_array_maker(graph_data).first
-    end
-
-    def extract_graph
-      self.send(:remove_instance_variable, :@graph)
-    end
-
-    def self.extract_collective_graph(objects)
-      collective_graph = RDF::Graph.new
-      objects.each do |o|
-        collective_graph << o.extract_graph
-      end
-      collective_graph
     end
 
   end
