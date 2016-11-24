@@ -34,7 +34,7 @@ module Grom
       ActiveSupport::Inflector.underscore(class_name).downcase
     end
 
-    def extract_collective_graph(objects)
+    def collective_graph(objects)
       collective_graph = RDF::Graph.new
       objects.each do |o|
         collective_graph << o.graph
