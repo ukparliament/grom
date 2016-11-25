@@ -12,7 +12,8 @@ module Grom
     def initialize(attributes)
       unless attributes == {}
         ttl_graph = self.class.convert_to_ttl(attributes[:graph])
-        self.instance_eval("def graph;  self.class.create_graph_from_ttl('#{ttl_graph}') ; end")
+        ttl_test = ttl_graph.dup.gsub(/\'/, "\\\'")
+        self.instance_eval("def graph;  self.class.create_graph_from_ttl('#{ttl_test}') ; end")
       end
       attributes.each do |k, v|
         translated_key = self.class.property_translator[k]
