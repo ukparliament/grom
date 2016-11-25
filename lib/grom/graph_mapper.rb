@@ -10,7 +10,7 @@ module Grom
     end
 
     def convert_to_ttl(data)
-      result = ''
+      result = ""
       data.each_statement do |statement|
         result << RDF::NTriples::Writer.serialize(statement)
       end
