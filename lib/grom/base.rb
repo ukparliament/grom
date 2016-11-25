@@ -11,7 +11,7 @@ module Grom
 
     def initialize(attributes)
       unless attributes == {}
-        ttl_graph = self.class.convert_to_ttl(attributes[:graph]).gsub("'", %q(\\\'))
+        ttl_graph = self.class.convert_to_ttl(attributes[:graph]).gsub("'", "\\\\'")
         self.instance_eval("def graph;  self.class.create_graph_from_ttl('#{ttl_graph}') ; end")
       end
       attributes.each do |k, v|
