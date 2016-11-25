@@ -147,8 +147,36 @@ describe Grom::Base do
       expect(contact_points.email).to eq 'daenerys@khaleesi.com'
     end
 
-    xit 'should return a hash with the object, its associated objects in an array, and the through objects in an array' do
+    it 'should return a hash with the object, its associated objects in an array, and the through objects in an array' do
+      person_hash = dummy_person.serialize_associated_objects(:dummy_parties)
+      party_one = person_hash[:dummy_parties].select{ |o| o.id == '23'}.first
+      party_two = person_hash[:dummy_parties].select{ |o| o.id == '26'}.first
+      party_one_membership = party_one.dummy_party_memberships[0]
+      party_two_membership = party_two.dummy_party_memberships[0]
+      expect(person_hash[:dummy_person]).to eq dummy_person
+      expect(party_one.name).to eq 'Targaryens'
+      expect(party_two.name).to eq 'Dothrakis'
+      expect(party_one_membership.id).to eq '25'
+      expect(party_one_membership.start_date).to eq '1953-01-12'
+      expect(party_one_membership.end_date).to eq '1954-01-12'
+      expect(party_two_membership.id).to eq '27'
+      expect(party_two_membership.start_date).to eq '1954-01-12'
+      expect(party_two_membership.end_date).to eq '1955-03-11'
+    end
 
+    it 'should return a hash with the object and two associations' do
+      person_hash = dummy_person.serialize_associated_objects(:dummy_contact_points, :dummy_cat)
+      contact_points = person_hash[:dummy_contact_points][0]
+      cat = person_hash[:dummy_cat]
+      expect(person_hash[:dummy_person]).to eq dummy_person
+      expect(contact_points.id).to eq '123'
+      expect(contact_points.postal_code).to eq 'SW1A 0AA'
+      expect(contact_points.street_address).to eq 'House of Commons'
+      expect(contact_points.address_locality).to eq 'London'
+      expect(contact_points.telephone).to eq '020 7555 5555'
+      expect(contact_points.email).to eq 'daenerys@khaleesi.com'
+      expect(cat.id).to eq '123'
+      expect(cat.name).to eq 'Bob'
     end
   end
 end
