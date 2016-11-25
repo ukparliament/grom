@@ -4,6 +4,7 @@ describe Grom::Base do
 
   let(:dummy_person) { DummyPerson.find('1') }
   let(:dummy_people) { DummyPerson.all }
+  let(:name_pattern) { RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/name"), :object) }
   let(:surname_pattern) { RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/surname"), :object) }
   let(:forename_pattern) { RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/forename"), :object) }
   let(:middle_name_pattern) { RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/middleName"), :object) }
@@ -139,6 +140,11 @@ describe Grom::Base do
       expect(graph.query(middle_name_pattern).first_object.to_s).to eq 'Khaleesi'
       expect(graph.query(date_of_birth_pattern).first_object.to_s).to eq '1947-06-29'
       expect(graph.query(gender_pattern).first_object.to_s).to eq 'http://id.example.com/schema/Female'
+    end
+
+    it 'should return a graph even when there are single quotes in the ttl data' do
+      graph = DummyDog.find('1863').graph
+      expect(graph.query(name_pattern).first_object.to_s).to eq "B'uddy"
     end
   end
 

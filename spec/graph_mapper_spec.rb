@@ -7,6 +7,10 @@ describe Grom::GraphMapper do
     it 'should create an RDF graph given ttl data in a string format' do
       expect(extended_class.create_graph_from_ttl(PERSON_ONE_TTL).first).to eq PERSON_ONE_GRAPH.first
     end
+
+    it 'should return an RDF graph when there are single quotes in the ttl data' do
+      expect(extended_class.create_graph_from_ttl(BUDDY_TTL)).to eq BUDDY_GRAPH
+    end
   end
 
   describe '#get_id' do
