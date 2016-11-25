@@ -134,4 +134,21 @@ describe Grom::Base do
     end
   end
 
+  describe '#serialize_associated_objects' do
+    it 'should return a hash with the object and its associated objects in an array' do
+      person_hash = dummy_person.serialize_associated_objects(:dummy_contact_points)
+      contact_points = person_hash[:dummy_contact_points][0]
+      expect(person_hash[:dummy_person]).to eq dummy_person
+      expect(contact_points.id).to eq '123'
+      expect(contact_points.postal_code).to eq 'SW1A 0AA'
+      expect(contact_points.street_address).to eq 'House of Commons'
+      expect(contact_points.address_locality).to eq 'London'
+      expect(contact_points.telephone).to eq '020 7555 5555'
+      expect(contact_points.email).to eq 'daenerys@khaleesi.com'
+    end
+
+    xit 'should return a hash with the object, its associated objects in an array, and the through objects in an array' do
+
+    end
+  end
 end

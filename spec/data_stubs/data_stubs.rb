@@ -4,6 +4,28 @@ PERSON_ONE_HASH = { people: [
     }
 ] }
 
+PERSON_ONE_HASH_WITH_CONTACT_POINTS = {
+    :person => {
+        id: '1',
+        forename: 'Daenerys',
+        surname: 'Targaryen',
+        middle_name: 'Khaleesi',
+        date_of_birth: '1947-06-29',
+        gender: 'female',
+        contact_point: [
+            {
+                id: '123',
+                postalCode: 'SW1A 0AA',
+                email: 'daenerys@khaleesi.com',
+                street_address: 'House of Commons',
+                address_locality: 'London',
+                telephone: '020 7555 5555'
+            }
+        ]
+
+    }
+}
+
 
 PEOPLE_JSON_LD = "{\"@graph\":[{\"@id\":\"http://id.example.com/1\",\"http://id.example.com/schema/dateOfBirth\":{\"@value\":\"1947-06-29\",\"@type\":\"http://www.w3.org/2001/XMLSchema#date\"},\"http://id.example.com/schema/forename\":\"Daenerys\",\"http://id.example.com/schema/middleName\":\"Khaleesi\",\"http://id.example.com/schema/surname\":\"Targaryen\"},{\"@id\":\"http://id.example.com/2\",\"http://id.example.com/schema/dateOfBirth\":{\"@value\":\"1954-01-12\",\"@type\":\"http://www.w3.org/2001/XMLSchema#date\"},\"http://id.example.com/schema/forename\":\"Arya\",\"http://id.example.com/schema/middleName\":\"The Blind Girl\",\"http://id.example.com/schema/surname\":\"Stark\"}]}"
 
