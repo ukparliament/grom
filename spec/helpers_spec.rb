@@ -74,12 +74,12 @@ describe Grom::Helpers do
 
   describe '#collective_has_many_graph' do
     it 'should return a graph that contains the owner and the associated objects' do
-      collective_graph = extended_class.collective_graph(dummy, dummy.contact_points)
-      email_pattern = RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/email"), :object)
+      collective_graph = extended_class.collective_has_many_graph(dummy, dummy.dummy_contact_points)
+      email_pattern = RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/email"), :object)
 
       expect(collective_graph.query(forename_pattern).first_object.to_s).to eq 'Daenerys'
       expect(collective_graph.query(surname_pattern).first_object.to_s).to eq 'Targaryen'
-      expect(collective_graph.query(email_pattern).first_object.to_s).to eq 'bla'
+      expect(collective_graph.query(email_pattern).first_object.to_s).to eq 'daenerys@khaleesi.com'
     end
   end
 
