@@ -89,3 +89,11 @@ end
 CAT_ONE_TTL = "<http://id.example.com/123> <http://id.example.com/schema/name> \"Bob\""
 
 DOGS_TTL = "<http://id.example.com/1863> <http://id.example.com/schema/name> \"B'uddy\" .\n <http://id.example.com/1866> <http://id.example.com/schema/name> \"F'ido\" .\n"
+BUDDY_TTL = "<http://id.example.com/1863> <http://id.example.com/schema/name> \"B'uddy\" .\n"
+
+BUDDY_GRAPH = RDF::Graph.new
+RDF::NTriples::Reader.new(BUDDY_TTL) do |reader|
+  reader.each_statement do |statement|
+    BUDDY_GRAPH << statement
+  end
+end
