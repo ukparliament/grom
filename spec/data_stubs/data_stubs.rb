@@ -50,7 +50,7 @@ PEOPLE_HASH = [
 
 ONE_STATEMENT_STUB = RDF::Statement.new(RDF::URI.new("http://id.example.com/1"), RDF::URI.new("http://id.example.com/schema/forename"), 'Daenerys')
 
-PARTY_ONE_TTL = "<http://id.example.com/ff0e8e9f-6c5d-4fd4-928c-3252b49a2e65> <http://id.example.com/schema/partyName> \"Liberal Democrat\" ."
+PARTY_ONE_TTL = "<http://id.example.com/ff0e8e9f-6c5d-4fd4-928c-3252b49a2e65> <http://id.example.com/schema/partyName> \"Liberal Democrat\" .\n"
 PARTY_ONE_GRAPH = RDF::Graph.new
 RDF::NTriples::Reader.new(PARTY_ONE_TTL) do |reader|
     reader.each_statement do |statement|

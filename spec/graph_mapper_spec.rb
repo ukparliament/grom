@@ -19,6 +19,12 @@ describe Grom::GraphMapper do
     end
   end
 
+  describe '#convert_to_ttl' do
+    it 'should return a string of ttl given a graph' do
+      expect(extended_class.convert_to_ttl(PARTY_ONE_GRAPH)).to eq PARTY_ONE_TTL
+    end
+  end
+
   describe '#statements_mapper_by_subject' do
     it 'should return a hash with the mapped predicates and the respective objects from a graph' do
       arya = extended_class.statements_mapper_by_subject(PEOPLE_GRAPH).select{ |o| o[:id] == '2' }.first
