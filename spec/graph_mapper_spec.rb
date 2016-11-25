@@ -10,8 +10,12 @@ describe Grom::GraphMapper do
   end
 
   describe '#get_id' do
-    it 'should return the id given a uri' do
+    it 'should return the id if given a uri' do
       expect(extended_class.get_id(RDF::URI.new('http://id.example.com/123'))).to eq '123'
+    end
+
+    it 'should return "type" if given an RDF.type uri' do
+      expect(extended_class.get_id(RDF.type)).to eq 'type'
     end
   end
 
