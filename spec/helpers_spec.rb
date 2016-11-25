@@ -3,24 +3,22 @@ require 'spec_helper'
 describe Grom::Helpers do
 
   let(:extended_class) { Class.new { extend Grom::Helpers } }
+  let(:dummy) { DummyPerson.find('1') }
   let(:surname_pattern) { RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/surname"), :object) }
   let(:forename_pattern) { RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/forename"), :object) }
 
   describe '#associations_url_builder' do
     it 'should return an endpoint when given a class and an associated class' do
-      dummy = DummyPerson.find('1')
       url = extended_class.associations_url_builder(dummy, "Party", {})
       expect(url).to eq "#{API_ENDPOINT}/dummy_people/1/parties.ttl"
     end
 
     it 'should return an endpoint when given a class, an associated class and an options hash with optional set' do
-      dummy = DummyPerson.find('1')
       url = extended_class.associations_url_builder(dummy, "Party", {optional: "current" })
       expect(url).to eq "#{API_ENDPOINT}/dummy_people/1/parties/current.ttl"
     end
 
     it 'should return an endpoint when given a class, an associated class and an options hash with single set to true' do
-      dummy = DummyPerson.find('1')
       url = extended_class.associations_url_builder(dummy, "Party", {single: true })
       expect(url).to eq "#{API_ENDPOINT}/dummy_people/1/party.ttl"
     end
@@ -74,34 +72,53 @@ describe Grom::Helpers do
     end
   end
 
+  describe '#collective_has_many_graph' do
+    it 'should return a graph that contains the owner and the associated objects' do
+      collective_graph = extended_class.collective_graph(dummy, dummy.contact_points)
+      email_pattern = RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/email"), :object)
+
+      expect(collective_graph.query(forename_pattern).first_object.to_s).to eq 'Daenerys'
+      expect(collective_graph.query(surname_pattern).first_object.to_s).to eq 'Targaryen'
+      expect(collective_graph.query(email_pattern).first_object.to_s).to eq 'bla'
+    end
+  end
+
   describe '#collective_through_graph' do
-    it 'should return a graph that contains statements for teh owner, the associated objects and the through objects' do
-      dummy = DummyPerson.find('1')
+
+    let(:collective_through_graph) { extended_class.collective_through_graph(dummy, dummy.dummy_parties, :dummy_party_memberships) }
+
+    it 'should return a graph that contains statements for the owner and the through objects' do
+      expect(collective_through_graph.query(forename_pattern).first_object.to_s).to eq 'Daenerys'
+      expect(collective_through_graph.query(surname_pattern).first_object.to_s).to eq 'Targaryen'
+    end
+
+    it 'should return a graph that contains statements for the associated objects and the connection statements with the through object' do
       party_one_type_pattern = RDF::Query::Pattern.new(RDF::URI.new("http://id.example.com/23"), RDF::URI.new("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), :object)
       party_two_type_pattern = RDF::Query::Pattern.new(RDF::URI.new("http://id.example.com/26"), RDF::URI.new("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), :object)
       party_one_name_pattern = RDF::Query::Pattern.new(RDF::URI.new("http://id.example.com/23"), RDF::URI.new("#{DATA_URI_PREFIX}/schema/partyName"), :object)
       party_two_name_pattern = RDF::Query::Pattern.new(RDF::URI.new("http://id.example.com/26"), RDF::URI.new("#{DATA_URI_PREFIX}/schema/partyName"), :object)
       party_one_connection_pattern = RDF::Query::Pattern.new(RDF::URI.new("http://id.example.com/25"), RDF::URI.new("#{DATA_URI_PREFIX}/schema/partyMembershipHasParty"), :object)
       party_two_connection_pattern = RDF::Query::Pattern.new(RDF::URI.new("http://id.example.com/27"), RDF::URI.new("#{DATA_URI_PREFIX}/schema/partyMembershipHasParty"), :object)
+
+      expect(collective_through_graph.query(party_one_name_pattern).first_object.to_s).to eq 'Targaryens'
+      expect(collective_through_graph.query(party_two_name_pattern).first_object.to_s).to eq 'Dothrakis'
+      expect(collective_through_graph.query(party_one_type_pattern).first_object.to_s).to eq 'http://id.example.com/schema/DummyParty'
+      expect(collective_through_graph.query(party_two_type_pattern).first_object.to_s).to eq 'http://id.example.com/schema/DummyParty'
+      expect(collective_through_graph.query(party_one_connection_pattern).first_object.to_s).to eq 'http://id.example.com/23'
+      expect(collective_through_graph.query(party_two_connection_pattern).first_object.to_s).to eq 'http://id.example.com/26'
+
+    end
+
+    it 'should return a graph that contains statements for the through objects' do
       party_one_membership_pattern = RDF::Query::Pattern.new(RDF::URI.new("http://id.example.com/25"), RDF::URI.new("#{DATA_URI_PREFIX}/schema/partyMembershipEndDate"), :object)
       party_two_membership_pattern = RDF::Query::Pattern.new(RDF::URI.new("http://id.example.com/27"), RDF::URI.new("#{DATA_URI_PREFIX}/schema/partyMembershipEndDate"), :object)
       party_membership_one_type_pattern = RDF::Query::Pattern.new(RDF::URI.new("http://id.example.com/25"), RDF::URI.new("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), :object)
       party_membership_two_type_pattern = RDF::Query::Pattern.new(RDF::URI.new("http://id.example.com/27"), RDF::URI.new("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), :object)
 
-
-      collective_graph = extended_class.collective_through_graph(dummy, dummy.dummy_parties, :dummy_party_memberships)
-      expect(collective_graph.query(forename_pattern).first_object.to_s).to eq 'Daenerys'
-      expect(collective_graph.query(surname_pattern).first_object.to_s).to eq 'Targaryen'
-      expect(collective_graph.query(party_one_name_pattern).first_object.to_s).to eq 'Targaryens'
-      expect(collective_graph.query(party_two_name_pattern).first_object.to_s).to eq 'Dothrakis'
-      expect(collective_graph.query(party_one_type_pattern).first_object.to_s).to eq 'http://id.example.com/schema/DummyParty'
-      expect(collective_graph.query(party_two_type_pattern).first_object.to_s).to eq 'http://id.example.com/schema/DummyParty'
-      expect(collective_graph.query(party_membership_one_type_pattern).first_object.to_s).to eq 'http://id.example.com/schema/DummyPartyMembership'
-      expect(collective_graph.query(party_membership_two_type_pattern).first_object.to_s).to eq 'http://id.example.com/schema/DummyPartyMembership'
-      expect(collective_graph.query(party_one_membership_pattern).first_object.to_s).to eq '1954-01-12'
-      expect(collective_graph.query(party_two_membership_pattern).first_object.to_s).to eq '1955-03-11'
-      expect(collective_graph.query(party_one_connection_pattern).first_object.to_s).to eq 'http://id.example.com/23'
-      expect(collective_graph.query(party_two_connection_pattern).first_object.to_s).to eq 'http://id.example.com/26'
+      expect(collective_through_graph.query(party_membership_one_type_pattern).first_object.to_s).to eq 'http://id.example.com/schema/DummyPartyMembership'
+      expect(collective_through_graph.query(party_membership_two_type_pattern).first_object.to_s).to eq 'http://id.example.com/schema/DummyPartyMembership'
+      expect(collective_through_graph.query(party_one_membership_pattern).first_object.to_s).to eq '1954-01-12'
+      expect(collective_through_graph.query(party_two_membership_pattern).first_object.to_s).to eq '1955-03-11'
     end
   end
 
