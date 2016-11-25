@@ -10,7 +10,7 @@ module Grom
     end
 
     def convert_to_ttl(data)
-      p "called convert_to_ttl"
+      # p "called convert_to_ttl"
       result = ""
       data.each_statement do |statement|
         result << RDF::NTriples::Writer.serialize(statement)
@@ -19,7 +19,7 @@ module Grom
     end
 
     def create_graph_from_ttl(ttl_data)
-      p "called create_graph_from_ttl"
+      # p "called create_graph_from_ttl"
       # p ttl_data
       ttl_data
       graph = RDF::Graph.new
