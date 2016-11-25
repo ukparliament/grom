@@ -91,5 +91,15 @@ module Grom
       self.object_array_maker(graph_data).first
     end
 
+    def serialize_associated_objects(*associations)
+      object_name = self.class.create_property_name(self.class.name).to_sym
+      hash = {
+          object_name => self
+      }
+      associations.each do |association|
+        hash[association] = self.send(association)
+      end
+      hash
+    end
   end
 end
