@@ -151,14 +151,14 @@ describe Grom::Base do
   describe '#serialize_associated_objects' do
     it 'should return a hash with the object and its associated objects in an array' do
       person_hash = dummy_person.serialize_associated_objects(:dummy_contact_points)
-      contact_points = person_hash[:dummy_contact_points][0]
+      contact_point = person_hash[:dummy_contact_points][0]
       expect(person_hash[:dummy_person]).to eq dummy_person
-      expect(contact_points.id).to eq '123'
-      expect(contact_points.postal_code).to eq 'SW1A 0AA'
-      expect(contact_points.street_address).to eq 'House of Commons'
-      expect(contact_points.address_locality).to eq 'London'
-      expect(contact_points.telephone).to eq '020 7555 5555'
-      expect(contact_points.email).to eq 'daenerys@khaleesi.com'
+      expect(contact_point.id).to eq '123'
+      expect(contact_point.postal_code).to eq 'SW1A 0AA'
+      expect(contact_point.street_address).to eq 'House of Commons'
+      expect(contact_point.address_locality).to eq 'London'
+      expect(contact_point.telephone).to eq '020 7555 5555'
+      expect(contact_point.email).to eq 'daenerys@khaleesi.com'
     end
 
     it 'should return a hash with the object, its associated objects in an array, and the through objects in an array' do
@@ -189,6 +189,33 @@ describe Grom::Base do
       expect(contact_points.address_locality).to eq 'London'
       expect(contact_points.telephone).to eq '020 7555 5555'
       expect(contact_points.email).to eq 'daenerys@khaleesi.com'
+      expect(cat.id).to eq '123'
+      expect(cat.name).to eq 'Bob'
+    end
+
+    it 'should return a hash with the correct objects, given the flag current' do
+      person_hash = dummy_person.serialize_associated_objects(dummy_contact_points: 'current')
+      contact_point = person_hash[:dummy_contact_points][0]
+      expect(person_hash[:dummy_person]).to eq dummy_person
+      expect(contact_point.id).to eq '123'
+      expect(contact_point.postal_code).to eq 'SW1A 0AA'
+      expect(contact_point.street_address).to eq 'House of Commons'
+      expect(contact_point.address_locality).to eq 'London'
+      expect(contact_point.telephone).to eq '020 7555 5555'
+      expect(contact_point.email).to eq 'daenerys@khaleesi.com'
+    end
+
+    it 'should return a hash with the correct objects, given a mix of arguments' do
+      person_hash = dummy_person.serialize_associated_objects({dummy_contact_points: 'current' }, :dummy_cat)
+      contact_point = person_hash[:dummy_contact_points][0]
+      cat = person_hash[:dummy_cat]
+      expect(person_hash[:dummy_person]).to eq dummy_person
+      expect(contact_point.id).to eq '123'
+      expect(contact_point.postal_code).to eq 'SW1A 0AA'
+      expect(contact_point.street_address).to eq 'House of Commons'
+      expect(contact_point.address_locality).to eq 'London'
+      expect(contact_point.telephone).to eq '020 7555 5555'
+      expect(contact_point.email).to eq 'daenerys@khaleesi.com'
       expect(cat.id).to eq '123'
       expect(cat.name).to eq 'Bob'
     end

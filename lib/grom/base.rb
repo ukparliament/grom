@@ -97,7 +97,12 @@ module Grom
           object_name => self
       }
       associations.each do |association|
-        hash[association] = self.send(association)
+        if association.is_a?(Hash)
+          association_name = association.keys.first
+          hash[association_name] = self.send(association_name, association.values.first)
+        else
+          hash[association] = self.send(association)
+        end
       end
       hash
     end
