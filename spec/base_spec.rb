@@ -61,6 +61,14 @@ describe Grom::Base do
       expect(dummy_members_current_banana[0]).to be_a DummyPerson
       expect(dummy_members_current_banana[1]).to be_a DummyPerson
     end
+
+    it 'should work with names that have got an apostrophe' do
+      dogs = DummyDog.all
+      buddy = dogs.select { |d| d.id == '1863' }.first
+      fido = dogs.select { |d| d.id == '1866' }.first
+      expect(buddy.name).to eq "B'uddy"
+      expect(fido.name).to eq "F'ido"
+    end
   end
 
   describe '#object_array_maker' do

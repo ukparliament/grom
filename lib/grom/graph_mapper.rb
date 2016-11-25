@@ -14,7 +14,7 @@ module Grom
       data.each_statement do |statement|
         result << RDF::NTriples::Writer.serialize(statement)
       end
-      result
+      result.gsub(/\'/, "\\\'")
     end
 
     def create_graph_from_ttl(ttl_data)
