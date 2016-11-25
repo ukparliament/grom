@@ -87,3 +87,5 @@ RDF::NTriples::Reader.new(NO_TYPE_PARTY_MEMBERSHIP_TTL) do |reader|
 end
 
 CAT_ONE_TTL = "<http://id.example.com/123> <http://id.example.com/schema/name> \"Bob\""
+
+DOGS_TTL = "<http://id.example.com/1863> <http://id.example.com/schema/name> \"B'uddy\" .\n <http://id.example.com/1866> <http://id.example.com/schema/name> \"F'ido\" .\n"
