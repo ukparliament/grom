@@ -1,6 +1,6 @@
 require 'grom'
 require 'uri'
-require 'active_support/all'
+require 'active_support/core_ext/string/inflections'
 require_relative '../../lib/grom/helpers'
 
 module Grom
