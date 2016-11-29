@@ -1,5 +1,4 @@
 require 'grom'
-require 'net/http'
 
 module Grom
   module GraphMapper
