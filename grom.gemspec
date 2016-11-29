@@ -17,11 +17,14 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
 
   s.add_dependency "rails", "~> 5.0.0", ">= 5.0.0.1"
+  s.add_dependency "activesupport"
 
   # the below are test dependencies
   s.add_development_dependency "rspec-rails"
   s.add_development_dependency "rdf", "2.1.0"
   s.add_development_dependency "webmock"
   s.add_development_dependency "simplecov"
+
+  # s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
 
 end

@@ -1,13 +1,11 @@
 require 'grom'
 require 'uri'
-require 'active_support/core_ext/string/inflections'
 require_relative '../../lib/grom/helpers'
 
 module Grom
   class Base
     extend Grom::GraphMapper
     extend Grom::Helpers
-    extend ActiveSupport::Inflector
 
     def initialize(attributes)
       unless attributes == {}
@@ -70,7 +68,7 @@ module Grom
       self.through_getter_setter(through_property_plural)
       associated_objects_array.each do |associated_object|
         through_class_array = get_through_graphs(separated_graphs[:through_graph], associated_object.id).map do |graph|
-          through_class.constantize.object_single_maker(graph)
+          ActiveSupport::Inflector.constantize(through_class).object_single_maker(graph)
         end
         associated_object.send((through_property_plural + '=').to_sym, through_class_array)
       end

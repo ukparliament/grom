@@ -1,6 +1,7 @@
 require_relative '../lib/grom/graph_mapper'
 require_relative '../lib/grom/base'
 require_relative '../lib/grom/helpers'
+require 'active_support/core_ext/string/inflections'
 
 module Grom
   VERSION = '0.1.0'
