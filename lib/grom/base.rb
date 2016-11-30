@@ -124,8 +124,11 @@ module Grom
           associated_hash[subject][get_id(s.predicate).to_sym] = s.object.to_s
         else
           through_hash[s.subject.to_s] ||= {}
-          if (s.object.to_s =~ URI::regexp) == 0
+          # if (s.object.to_s =~ URI::regexp) == 0
+          if get_id(s.predicate) == "connect"
             through_hash[s.subject.to_s][:associated_object_id] = get_id(s.object)
+          elsif get_id(s.predicate) == "objectId"
+            through_hash[s.subject.to_s][:id] = get_id(s.object)
           else
             through_hash[s.subject.to_s][get_id(s.predicate).to_sym] = s.object.to_s
           end
