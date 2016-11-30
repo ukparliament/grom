@@ -163,7 +163,7 @@ describe Grom::Base do
       expect(contact_point.email).to eq 'daenerys@khaleesi.com'
     end
 
-    xit 'should return a hash with the object, its associated objects in an array, and the through objects in an array' do
+    it 'should return a hash with the object, its associated objects in an array, and the through objects in an array' do
       person_hash = dummy_person.serialize_associated_objects(:dummy_parties)
       party_one = person_hash[:dummy_parties].select{ |o| o.id == '23'}.first
       party_two = person_hash[:dummy_parties].select{ |o| o.id == '26'}.first
@@ -172,12 +172,12 @@ describe Grom::Base do
       expect(person_hash[:dummy_person]).to eq dummy_person
       expect(party_one.name).to eq 'Targaryens'
       expect(party_two.name).to eq 'Dothrakis'
-      expect(party_one_membership.id).to eq '25'
-      expect(party_one_membership.start_date).to eq '1953-01-12'
-      expect(party_one_membership.end_date).to eq '1954-01-12'
-      expect(party_two_membership.id).to eq '27'
-      expect(party_two_membership.start_date).to eq '1954-01-12'
-      expect(party_two_membership.end_date).to eq '1955-03-11'
+      expect(party_one_membership[:id]).to eq '42'
+      expect(party_one_membership[:partyMembershipStartDate]).to eq '1953-01-12'
+      expect(party_one_membership[:partyMembershipEndDate]).to eq '1954-01-12'
+      expect(party_two_membership[:id]).to eq '43'
+      expect(party_two_membership[:partyMembershipStartDate]).to eq '1954-01-12'
+      expect(party_two_membership[:partyMembershipEndDate]).to eq '1955-03-11'
     end
 
     it 'should return a hash with the object and two associations' do
