@@ -95,10 +95,13 @@ module Grom
       endpoint_url = associations_url_builder(owner_object, self.name, {optional: optional })
       self.through_getter_setter(through_property_plural)
       graph = get_graph_data(endpoint_url)
-      separated_hashes = through_split_graph(graph)
-      through_array = separated_hashes[:through_class_hash].values
-      separated_hashes[:associated_class_hash].map do |hash|
-        associated_object = self.new(hash[1])
+      self.map_hashes_to_objects(through_split_graph(graph), through_property_plural)
+    end
+
+    def self.map_hashes_to_objects(hashes, through_property_plural)
+      through_array = hashes[:through_class_hash].values
+      hashes[:associated_class_hash].values.map do |hash|
+        associated_object = self.new(hash)
         through_obj_array, through_array = through_array.partition do |t_hash|
           t_hash[:associated_object_id] == associated_object.id
         end

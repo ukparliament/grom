@@ -222,4 +222,14 @@ describe Grom::Base do
       expect(cat.name).to eq 'Bob'
     end
   end
+
+  describe '#map_hashes_to_objects' do
+    it 'should return an array of objects, given hashes for the associated objects and through objects' do
+      DummyPerson.through_getter_setter("dummy_party_memberships")
+      arr = DummyPerson.map_hashes_to_objects(BLANK_PARTY_MEMBERSHIPS_HASH, "dummy_party_memberships")
+      expect(arr.first.forename).to eq 'Daenerys'
+      expect(arr.first.surname).to eq 'Targaryen'
+      expect(arr.first.dummy_party_memberships.count).to eq 2
+    end
+  end
 end
