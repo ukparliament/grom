@@ -135,10 +135,9 @@ module Grom
       associated_hash.map do |hash|
         associated_object = self.new(hash[1])
         through_obj_array, through_array = through_array.partition do |t_hash|
-          t_hash[:id] == associated_object.id
+          t_hash[:associated_object_id] == associated_object.id
         end
         associated_object.send((through_property_plural + '=').to_sym, through_obj_array)
-        p associated_object
         associated_object
       end
     end

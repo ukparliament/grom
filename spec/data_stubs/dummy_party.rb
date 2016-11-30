@@ -1,6 +1,6 @@
 class DummyParty < Grom::Base
 
-  # apples :dummy_members, via: :dummy_party_memberships
+  has_many_through :dummy_members, via: :dummy_party_memberships
 
   def self.property_translator
     {
