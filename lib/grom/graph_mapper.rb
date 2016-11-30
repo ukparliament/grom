@@ -71,5 +71,27 @@ module Grom
       end
      end
 
+    def through_split_graph(graph)
+      associated_hash, through_hash = {}, {}
+      graph.each_statement do |s|
+        if (s.subject.to_s =~ URI::regexp) == 0
+          subject = get_id(s.subject)
+          associated_hash[subject] ||= { :id => subject, :graph => RDF::Graph.new }
+          associated_hash[subject][:graph] << s
+          associated_hash[subject][get_id(s.predicate).to_sym] = s.object.to_s
+        else
+          through_hash[s.subject.to_s] ||= {}
+          if get_id(s.predicate) == "connect"
+            through_hash[s.subject.to_s][:associated_object_id] = get_id(s.object)
+          elsif get_id(s.predicate) == "objectId"
+            through_hash[s.subject.to_s][:id] = get_id(s.object)
+          else
+            through_hash[s.subject.to_s][get_id(s.predicate).to_sym] = s.object.to_s
+          end
+        end
+      end
+      { associated_class_hash: associated_hash, through_class_hash: through_hash }
+    end
+
   end
 end
