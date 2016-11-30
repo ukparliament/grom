@@ -95,28 +95,13 @@ module Grom
       endpoint_url = associations_url_builder(owner_object, self.name, {optional: optional })
       self.through_getter_setter(through_property_plural)
       graph = get_graph_data(endpoint_url)
-      associated_hash = {}
-      through_hash = {}
-      graph.each_statement do |s|
-        if (s.subject.to_s =~ URI::regexp) == 0
-          subject = get_id(s.subject)
-          associated_hash[subject] ||= { :id => subject, :graph => RDF::Graph.new }
-          associated_hash[subject][get_id(s.predicate).to_sym] = s.object.to_s
-        else
-          through_hash[s.subject.to_s] ||= {}
-          # if (s.object.to_s =~ URI::regexp) == 0
-          if get_id(s.predicate) == "connect"
-            through_hash[s.subject.to_s][:associated_object_id] = get_id(s.object)
-          elsif get_id(s.predicate) == "objectId"
-            through_hash[s.subject.to_s][:id] = get_id(s.object)
-          else
-            through_hash[s.subject.to_s][get_id(s.predicate).to_sym] = s.object.to_s
-          end
-        end
-      end
-      through_array = through_hash.values
-      associated_hash.map do |hash|
-        associated_object = self.new(hash[1])
+      self.map_hashes_to_objects(through_split_graph(graph), through_property_plural)
+    end
+
+    def self.map_hashes_to_objects(hashes, through_property_plural)
+      through_array = hashes[:through_class_hash].values
+      hashes[:associated_class_hash].values.map do |hash|
+        associated_object = self.new(hash)
         through_obj_array, through_array = through_array.partition do |t_hash|
           t_hash[:associated_object_id] == associated_object.id
         end

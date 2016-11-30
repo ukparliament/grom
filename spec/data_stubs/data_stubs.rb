@@ -48,6 +48,7 @@ PEOPLE_HASH = [
     }
 ]
 
+
 ONE_STATEMENT_STUB = RDF::Statement.new(RDF::URI.new("http://id.example.com/1"), RDF::URI.new("http://id.example.com/schema/forename"), 'Daenerys')
 
 PARTY_ONE_TTL = "<http://id.example.com/81> <http://id.example.com/schema/partyName> \"Liberal Democrat\" .\n"
@@ -100,3 +101,27 @@ end
 
 
 BLANK_PARTY_MEMBERSHIPS_TTL = "<http://id.example.com/1> <http://id.example.com/schema/forename> \"Daenerys\" .\n <http://id.example.com/1> <http://id.example.com/schema/surname> \"Targaryen\" .\n <http://id.example.com/1> <http://id.example.com/schema/middleName> \"Khaleesi\" .\n _:node1504 <http://id.example.com/schema/connect> <http://id.example.com/1>.\n _:node1504 <http://id.example.com/schema/objectId> <http://id.example.com/42>.\n _:node1504 <http://id.example.com/schema/partyMembershipEndDate> \"1954-01-12\"^^<http://www.w3.org/2001/XMLSchema#date> .\n _:node1504 <http://id.example.com/schema/partyMembershipStartDate> \"1944-01-12\"^^<http://www.w3.org/2001/XMLSchema#date> .\n _:node1503 <http://id.example.com/schema/connect> <http://id.example.com/1>.\n _:node1503 <http://id.example.com/schema/objectId> <http://id.example.com/43>.\n _:node1503 <http://id.example.com/schema/partyMembershipEndDate> \"1959-01-12\"^^<http://www.w3.org/2001/XMLSchema#date> .\n _:node1503 <http://id.example.com/schema/partyMembershipStartDate> \"1948-01-12\"^^<http://www.w3.org/2001/XMLSchema#date> .\n"
+BLANK_PARTY_MEMBERSHIPS_GRAPH = RDF::Graph.new
+RDF::NTriples::Reader.new(BLANK_PARTY_MEMBERSHIPS_TTL) do |reader|
+    reader.each_statement do |statement|
+        BLANK_PARTY_MEMBERSHIPS_GRAPH << statement
+    end
+end
+
+PERSON_ONE_NAMES_TTL = "<http://id.example.com/1> <http://id.example.com/schema/forename> \"Daenerys\" .\n <http://id.example.com/1> <http://id.example.com/schema/surname> \"Targaryen\" .\n <http://id.example.com/1> <http://id.example.com/schema/middleName> \"Khaleesi\" .\n"
+PERSON_ONE_NAMES_GRAPH = RDF::Graph.new
+RDF::NTriples::Reader.new(PERSON_ONE_NAMES_TTL) do |reader|
+    reader.each_statement do |statement|
+        PERSON_ONE_NAMES_GRAPH << statement
+    end
+end
+
+BLANK_PARTY_MEMBERSHIPS_HASH = {
+    :associated_class_hash => {
+        "1"=>{:id=>"1", :graph=>PERSON_ONE_NAMES_GRAPH, :surname=>"Targaryen", :middleName=>"Khaleesi", :forename=>"Daenerys"}
+    },
+    :through_class_hash => {
+        "_:node1504"=>{:associated_object_id=>"1", :partyMembershipEndDate=>"1954-01-12", :partyMembershipStartDate=>"1944-01-12", :id=>"42"},
+        "_:node1503"=>{:associated_object_id=>"1", :partyMembershipEndDate=>"1959-01-12", :partyMembershipStartDate=>"1948-01-12", :id=>"43"}
+    }
+}
