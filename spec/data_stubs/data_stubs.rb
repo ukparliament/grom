@@ -78,6 +78,8 @@ RDF::NTriples::Reader.new(PARTY_MEMBERSHIP_TTL) do |reader|
     end
 end
 
+BLANK_PARTY_MEMBERSHIP_TTL_BY_PARTY = "<http://id.example.com/23> <http://id.example.com/schema/partyName> \"Targaryens\" .\n <http://id.example.com/23> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.example.com/schema/DummyParty> .\n _:node123 <http://id.example.com/schema/connect> <http://id.example.com/23> .\n _:node123 <http://id.example.com/schema/objectId> <http://id.example.com/42> .\n _:node123 <http://id.example.com/schema/partyMembershipEndDate> \"1954-01-12\"^^<http://www.w3.org/2001/XMLSchema#date> .\n _:node123 <http://id.example.com/schema/partyMembershipStartDate> \"1953-01-12\"^^<http://www.w3.org/2001/XMLSchema#date> .\n <http://id.example.com/26> <http://id.example.com/schema/partyName> \"Dothrakis\" .\n <http://id.example.com/26> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.example.com/schema/DummyParty> .\n _:node124 <http://id.example.com/schema/connect> <http://id.example.com/26> . \n _:node124 <http://id.example.com/schema/objectId> <http://id.example.com/43> . \n _:node124 <http://id.example.com/schema/partyMembershipEndDate> \"1955-03-11\"^^<http://www.w3.org/2001/XMLSchema#date> .\n _:node124 <http://id.example.com/schema/partyMembershipStartDate> \"1954-01-12\"^^<http://www.w3.org/2001/XMLSchema#date> .\n"
+
 NO_TYPE_PARTY_MEMBERSHIP_TTL = "<http://id.example.com/25> <http://id.example.com/schema/partyMembershipEndDate> \"1954-01-12\"^^<http://www.w3.org/2001/XMLSchema#date> .\n <http://id.example.com/25> <http://id.example.com/schema/partyMembershipStartDate> \"1953-01-12\"^^<http://www.w3.org/2001/XMLSchema#date> .\n"
 
 NO_TYPE_PARTY_MEMBERSHIP_GRAPH = RDF::Graph.new
