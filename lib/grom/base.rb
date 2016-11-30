@@ -59,28 +59,13 @@ module Grom
       self.object_single_maker(graph_data)
     end
 
-    # def self.has_many_through_query(owner_object, through_class, optional=nil)
-    #   endpoint_url = associations_url_builder(owner_object, self.name, {optional: optional })
-    #   graph_data = get_graph_data(endpoint_url)
-    #   separated_graphs = split_by_subject(graph_data, self.name)
-    #   associated_objects_array = self.object_array_maker(separated_graphs[:associated_class_graph])
-    #   through_property_plural = create_plural_property_name(through_class)
-    #   self.through_getter_setter(through_property_plural)
-    #   associated_objects_array.each do |associated_object|
-    #     through_class_array = get_through_graphs(separated_graphs[:through_graph], associated_object.id).map do |graph|
-    #       ActiveSupport::Inflector.constantize(through_class).object_single_maker(graph)
-    #     end
-    #     associated_object.send((through_property_plural + '=').to_sym, through_class_array)
-    #   end
-    # end
-
     def self.through_getter_setter(through_property_plural)
       self.class_eval("def #{through_property_plural}=(array); @#{through_property_plural} = array; end")
       self.class_eval("def #{through_property_plural}; @#{through_property_plural}; end")
     end
 
     def self.object_array_maker(graph_data)
-      self.statements_mapper_by_subject(graph_data).map do |data|
+      self.statements_mapper(graph_data).map do |data|
         self.new(data)
       end
     end
@@ -104,11 +89,6 @@ module Grom
       end
       hash
     end
-
-    # def self.apples(association, through_association)
-    #   self.has_many(through_association[:via])
-    #   self.class_eval("def #{association}(optional=nil); #{create_class_name(association)}.bananas(self, #{create_class_name(through_association[:via])}.new({}).class.name, optional); end")
-    # end
 
     def self.has_many_through_query(owner_object, through_class, optional=nil)
       through_property_plural = create_plural_property_name(through_class)

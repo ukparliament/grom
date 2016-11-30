@@ -30,22 +30,16 @@ module Grom
       uri == RDF.type.to_s ? 'type' : uri.to_s.split("/").last
     end
 
-    def get_object_and_predicate(statement)
-      predicate = get_id(statement.predicate)
-      { predicate.to_sym => statement.object.to_s }
-    end
-
-    def statements_mapper_by_subject(graph)
-      graph.subjects.map do |subject|
-        individual_graph = RDF::Graph.new
-        pattern = RDF::Query::Pattern.new(subject, :predicate, :object)
-        attributes = graph.query(pattern).map do |statement|
-          individual_graph << statement
-          get_object_and_predicate(statement)
-        end.reduce({}, :merge)
-
-        attributes.merge({id: get_id(subject), graph: individual_graph })
+    def statements_mapper(graph)
+      hash = {}
+      graph.each_statement do |s|
+        subject = get_id(s.subject)
+        hash[subject] ||= { :id => subject, :graph => RDF::Graph.new }
+        hash[subject][:graph] << s
+        hash[subject] ||= { :id => subject }
+        hash[subject][get_id(s.predicate).to_sym] = s.object.to_s
       end
+      hash.values
     end
 
     def split_by_subject(graph, associated_class_name)
