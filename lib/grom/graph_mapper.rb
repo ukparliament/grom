@@ -34,8 +34,8 @@ module Grom
       hash = {}
       graph.each_statement do |s|
         subject = get_id(s.subject)
-        # hash[subject] ||= { :id => subject, :graph => RDF::Graph.new }
-        # hash[subject][:graph] << s
+        hash[subject] ||= { :id => subject, :graph => RDF::Graph.new }
+        hash[subject][:graph] << s
         hash[subject] ||= { :id => subject }
         hash[subject][get_id(s.predicate).to_sym] = s.object.to_s
       end

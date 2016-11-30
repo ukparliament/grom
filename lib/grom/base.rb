@@ -8,10 +8,11 @@ module Grom
     extend Grom::Helpers
 
     def initialize(attributes)
-      # unless attributes == {}
-      #   ttl_graph = self.class.convert_to_ttl(attributes[:graph]).gsub("'", "\\\\'")
-      #   self.instance_eval("def graph;  self.class.create_graph_from_ttl('#{ttl_graph}') ; end")
-      # end
+      unless attributes == {}
+        ttl_graph = self.class.convert_to_ttl(attributes[:graph]).gsub("'", "\\\\'")
+        # self.instance_eval("def graph;  self.class.create_graph_from_ttl('#{ttl_graph}') ; end")
+        self.instance_eval("def graph; '#{ttl_graph}' ; end")
+      end
       attributes.each do |k, v|
         translated_key = self.class.property_translator[k]
         v = self.class.create_property_name(self.class.get_id(v)) if (v =~ URI::regexp) == 0
