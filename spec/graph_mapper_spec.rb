@@ -29,36 +29,13 @@ describe Grom::GraphMapper do
     end
   end
 
-  describe '#statements_mapper_by_subject' do
+  describe '#statements_mapper' do
     it 'should return a hash with the mapped predicates and the respective objects from a graph' do
-      arya = extended_class.statements_mapper_by_subject(PEOPLE_GRAPH).select{ |o| o[:id] == '2' }.first
+      arya = extended_class.statements_mapper(PEOPLE_GRAPH).select{ |o| o[:id] == '2' }.first
       expect(arya[:forename]).to eq 'Arya'
       surname_pattern = RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/surname"), :object)
       expect(arya[:graph].query(surname_pattern).first_object.to_s).to eq 'Stark'
     end
   end
 
-  describe '#get_object_and_predicate' do
-    it 'should should return a hash with predicate and object, given an RDF statement' do
-      expect(extended_class.get_object_and_predicate(ONE_STATEMENT_STUB)).to eq({ :forename => 'Daenerys' })
-    end
-  end
-
-  describe '#through_split_graph' do
-    let(:surname_pattern) { RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/surname"), :object) }
-    let(:forename_pattern) { RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/forename"), :object) }
-
-    it 'should return a hash with two hashes, associated_class_hash and through_class_hash' do
-      hash = extended_class.through_split_graph(BLANK_PARTY_MEMBERSHIPS_GRAPH)
-      person = hash[:associated_class_hash].values.first
-      party_membership = hash[:through_class_hash].values.select{ |h| h[:id] == '42' }.first
-      expect(person[:forename]).to eq 'Daenerys'
-      expect(person[:surname]).to eq 'Targaryen'
-      expect(person[:graph].query(forename_pattern).first_object.to_s).to eq 'Daenerys'
-      expect(person[:graph].query(surname_pattern).first_object.to_s).to eq 'Targaryen'
-      expect(party_membership[:partyMembershipStartDate]).to eq '1944-01-12'
-      expect(party_membership[:partyMembershipEndDate]).to eq '1954-01-12'
-      expect(party_membership[:associated_object_id]).to eq '1'
-    end
-  end
 end
