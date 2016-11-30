@@ -80,7 +80,7 @@ module Grom
     end
 
     def self.object_array_maker(graph_data)
-      self.statements_mapper_by_subject(graph_data).map do |data|
+      self.statements_mapper(graph_data).map do |data|
         self.new(data)
       end
     end
