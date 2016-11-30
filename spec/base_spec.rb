@@ -114,7 +114,7 @@ describe Grom::Base do
     end
   end
 
-  describe '#has_many_through' do
+  xdescribe '#has_many_through' do
     it 'should create a has_many_through association for a given class and be able to call the through_class on the association' do
       parties = dummy_person.dummy_parties
       targaryens = parties.select { |o| o.id == '23' }.first
@@ -161,7 +161,7 @@ describe Grom::Base do
       expect(contact_point.email).to eq 'daenerys@khaleesi.com'
     end
 
-    it 'should return a hash with the object, its associated objects in an array, and the through objects in an array' do
+    xit 'should return a hash with the object, its associated objects in an array, and the through objects in an array' do
       person_hash = dummy_person.serialize_associated_objects(:dummy_parties)
       party_one = person_hash[:dummy_parties].select{ |o| o.id == '23'}.first
       party_two = person_hash[:dummy_parties].select{ |o| o.id == '26'}.first
@@ -218,6 +218,15 @@ describe Grom::Base do
       expect(contact_point.email).to eq 'daenerys@khaleesi.com'
       expect(cat.id).to eq '123'
       expect(cat.name).to eq 'Bob'
+    end
+  end
+
+  xdescribe '#apples' do
+    it 'bla bla' do
+      dummy_party = DummyParty.find('81')
+      members = dummy_party.dummy_members
+      expect(members.first.forename).to eq 'Daenerys'
+      expect(members.first.dummy_party_memberships[0][:partyMembershipStartDate]).to eq '1944-01-12'
     end
   end
 end
