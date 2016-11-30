@@ -83,7 +83,7 @@ describe Grom::Helpers do
     end
   end
 
-  describe '#collective_through_graph' do
+  xdescribe '#collective_through_graph' do
 
     let(:collective_through_graph) { extended_class.collective_through_graph(dummy, dummy.dummy_parties, :dummy_party_memberships) }
 
