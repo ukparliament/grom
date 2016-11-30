@@ -222,13 +222,4 @@ describe Grom::Base do
       expect(cat.name).to eq 'Bob'
     end
   end
-
-  xdescribe '#apples' do
-    it 'bla bla' do
-      dummy_party = DummyParty.find('81')
-      members = dummy_party.dummy_members
-      expect(members.first.forename).to eq 'Daenerys'
-      expect(members.first.dummy_party_memberships[0][:partyMembershipStartDate]).to eq '1944-01-12'
-    end
-  end
 end
