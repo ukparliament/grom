@@ -29,21 +29,14 @@ describe Grom::GraphMapper do
     end
   end
 
-  describe '#statements_mapper_by_subject' do
+  describe '#statements_mapper' do
     it 'should return a hash with the mapped predicates and the respective objects from a graph' do
-      arya = extended_class.statements_mapper_by_subject(PEOPLE_GRAPH).select{ |o| o[:id] == '2' }.first
+      arya = extended_class.statements_mapper(PEOPLE_GRAPH).select{ |o| o[:id] == '2' }.first
       expect(arya[:forename]).to eq 'Arya'
       surname_pattern = RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/surname"), :object)
       expect(arya[:graph].query(surname_pattern).first_object.to_s).to eq 'Stark'
     end
   end
-
-  describe '#get_object_and_predicate' do
-    it 'should should return a hash with predicate and object, given an RDF statement' do
-      expect(extended_class.get_object_and_predicate(ONE_STATEMENT_STUB)).to eq({ :forename => 'Daenerys' })
-    end
-  end
-
 
   describe '#get_through_graphs' do
     it 'should return an array of graphs, given a graph and an id' do
