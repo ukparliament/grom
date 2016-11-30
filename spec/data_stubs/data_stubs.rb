@@ -50,7 +50,7 @@ PEOPLE_HASH = [
 
 ONE_STATEMENT_STUB = RDF::Statement.new(RDF::URI.new("http://id.example.com/1"), RDF::URI.new("http://id.example.com/schema/forename"), 'Daenerys')
 
-PARTY_ONE_TTL = "<http://id.example.com/ff0e8e9f-6c5d-4fd4-928c-3252b49a2e65> <http://id.example.com/schema/partyName> \"Liberal Democrat\" .\n"
+PARTY_ONE_TTL = "<http://id.example.com/81> <http://id.example.com/schema/partyName> \"Liberal Democrat\" .\n"
 PARTY_ONE_GRAPH = RDF::Graph.new
 RDF::NTriples::Reader.new(PARTY_ONE_TTL) do |reader|
     reader.each_statement do |statement|
@@ -97,3 +97,6 @@ RDF::NTriples::Reader.new(BUDDY_TTL) do |reader|
     BUDDY_GRAPH << statement
   end
 end
+
+
+BLANK_PARTY_MEMBERSHIPS_TTL = "<http://id.example.com/1> <http://id.example.com/schema/forename> \"Daenerys\" .\n <http://id.example.com/1> <http://id.example.com/schema/surname> \"Targaryen\" .\n <http://id.example.com/1> <http://id.example.com/schema/middleName> \"Khaleesi\" .\n _:node1504 <http://id.example.com/schema/connect> <http://id.example.com/1>.\n _:node1504 <http://id.example.com/schema/objectId> <http://id.example.com/42>.\n _:node1504 <http://id.example.com/schema/partyMembershipEndDate> \"1954-01-12\"^^<http://www.w3.org/2001/XMLSchema#date> .\n _:node1504 <http://id.example.com/schema/partyMembershipStartDate> \"1944-01-12\"^^<http://www.w3.org/2001/XMLSchema#date> .\n _:node1503 <http://id.example.com/schema/connect> <http://id.example.com/1>.\n _:node1503 <http://id.example.com/schema/objectId> <http://id.example.com/43>.\n _:node1503 <http://id.example.com/schema/partyMembershipEndDate> \"1959-01-12\"^^<http://www.w3.org/2001/XMLSchema#date> .\n _:node1503 <http://id.example.com/schema/partyMembershipStartDate> \"1948-01-12\"^^<http://www.w3.org/2001/XMLSchema#date> .\n"
