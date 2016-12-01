@@ -74,22 +74,6 @@ module Grom
       self.object_array_maker(graph_data).first
     end
 
-    def serialize_associated_objects(*associations)
-      object_name = self.class.create_property_name(self.class.name).to_sym
-      hash = {
-          object_name => self
-      }
-      associations.each do |association|
-        if association.is_a?(Hash)
-          association_name = association.keys.first
-          hash[association_name] = self.send(association_name, association.values.first)
-        else
-          hash[association] = self.send(association)
-        end
-      end
-      hash
-    end
-
     def self.has_many_through_query(owner_object, through_class, optional=nil)
       through_property_plural = create_plural_property_name(through_class)
       endpoint_url = associations_url_builder(owner_object, self.name, {optional: optional })
