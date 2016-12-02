@@ -56,5 +56,9 @@ module Grom
       end
       graph
     end
+
+    def order_list(arr, parameter)
+      arr.sort{ |a, b| a.send(parameter) <=> b.send(parameter) }
+    end
   end
 end
