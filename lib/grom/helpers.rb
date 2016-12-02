@@ -57,8 +57,10 @@ module Grom
       graph
     end
 
-    def order_list(arr, parameter)
-      arr.sort{ |a, b| a.send(parameter) <=> b.send(parameter) }
+    def order_list(arr, *parameters)
+      arr.sort_by do |obj|
+        parameters.map{ |param| obj.send(param) }
+      end
     end
   end
 end
