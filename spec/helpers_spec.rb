@@ -123,12 +123,32 @@ describe Grom::Helpers do
   end
 
   describe '#order_list' do
-    it 'should take an array of objects and order them by the given parameter' do
-      cats = [DummyCat.new({id: '1', name: 'Daenerys', graph: RDF::Graph.new}), DummyCat.new({id: '2', name: 'Arya', graph: RDF::Graph.new}), DummyCat.new({id: '3', name: 'Sansa', graph: RDF::Graph.new})]
-      ordered_cats = extended_class.order_list(cats, :name)
-      expect(ordered_cats[0].name).to eq 'Arya'
-      expect(ordered_cats[1].name).to eq 'Daenerys'
-      expect(ordered_cats[2].name).to eq 'Sansa'
+    let(:people) { [DummyPerson.new({id: '3', surname: 'Targaryen', forename: 'Daenerys', graph: RDF::Graph.new}),
+                    DummyPerson.new({id: '2', surname: 'Stark', forename: 'Sansa', graph: RDF::Graph.new}),
+                    DummyPerson.new({id: '1', surname: 'Stark', forename: 'Arya', graph: RDF::Graph.new}),
+                    DummyPerson.new({id: '4', surname: 'Stark', forename: 'Bran', graph: RDF::Graph.new})] }
+    it 'should take an array of objects and order them given one parameter' do
+      ordered_people = extended_class.order_list(people, :forename)
+      expect(ordered_people[0].forename).to eq 'Arya'
+      expect(ordered_people[1].forename).to eq 'Bran'
+      expect(ordered_people[2].forename).to eq 'Daenerys'
+      expect(ordered_people[3].forename).to eq 'Sansa'
+    end
+
+    it 'should take an array of objects and order them given two parameters - a surname and forename' do
+      ordered_people = extended_class.order_list(people, :surname, :forename)
+      expect(ordered_people[0].forename).to eq 'Arya'
+      expect(ordered_people[1].forename).to eq 'Bran'
+      expect(ordered_people[2].forename).to eq 'Sansa'
+      expect(ordered_people[3].forename).to eq 'Daenerys'
+    end
+
+    it 'should take an array of objects and order them given two parameters - a surname and id' do
+      ordered_people = extended_class.order_list(people, :surname, :id)
+      expect(ordered_people[0].forename).to eq 'Arya'
+      expect(ordered_people[1].forename).to eq 'Sansa'
+      expect(ordered_people[2].forename).to eq 'Bran'
+      expect(ordered_people[3].forename).to eq 'Daenerys'
     end
   end
 
