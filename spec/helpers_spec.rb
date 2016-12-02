@@ -122,4 +122,14 @@ describe Grom::Helpers do
     end
   end
 
+  describe '#order_list' do
+    it 'should take an array of objects and order them by the given parameter' do
+      cats = [DummyCat.new({id: '1', name: 'Daenerys', graph: RDF::Graph.new}), DummyCat.new({id: '2', name: 'Arya', graph: RDF::Graph.new}), DummyCat.new({id: '3', name: 'Sansa', graph: RDF::Graph.new})]
+      ordered_cats = extended_class.order_list(cats, :name)
+      expect(ordered_cats[0].name).to eq 'Arya'
+      expect(ordered_cats[1].name).to eq 'Daenerys'
+      expect(ordered_cats[2].name).to eq 'Sansa'
+    end
+  end
+
 end
