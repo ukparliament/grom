@@ -59,9 +59,7 @@ module Grom
 
     def order_list(arr, *parameters)
       arr.sort_by do |obj|
-        parameters.map do |param|
-          obj.send(param)
-        end
+        parameters.map{ |param| obj.send(param) }.select{ |p| not p.nil? }
       end
     end
 
