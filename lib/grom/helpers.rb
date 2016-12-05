@@ -58,9 +58,12 @@ module Grom
     end
 
     def order_list(arr, *parameters)
-      arr.sort_by do |obj|
+      rejected = []
+      arr.delete_if{ |obj| rejected << obj if parameters.any?{ |param| obj.send(param).nil? } }
+      sorted_arr = arr.sort_by do |obj|
         parameters.map{ |param| obj.send(param) }.select{ |p| not p.nil? }
       end
+      rejected.concat(sorted_arr)
     end
 
     def order_list_by_through(arr, through_association, property)
