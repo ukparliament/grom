@@ -127,6 +127,12 @@ describe Grom::Helpers do
                     DummyPerson.new({ id: '2', surname: 'Stark', forename: 'Sansa', graph: RDF::Graph.new }),
                     DummyPerson.new({ id: '1', surname: 'Stark', forename: 'Arya', graph: RDF::Graph.new }),
                     DummyPerson.new({ id: '4', surname: 'Stark', forename: 'Bran', graph: RDF::Graph.new })] }
+    let(:people_with_nil_property) { [DummyPerson.new({ id: '3', surname: 'Targaryen', forename: 'Daenerys', graph: RDF::Graph.new }),
+                    DummyPerson.new({ id: '2', surname: 'Stark', forename: 'Sansa', graph: RDF::Graph.new }),
+                    DummyPerson.new({ id: '5', surname: 'Williams', graph: RDF::Graph.new }),
+                    DummyPerson.new({ id: '1', surname: 'Stark', forename: 'Arya', graph: RDF::Graph.new }),
+                    DummyPerson.new({ id: '6', surname: 'Stark', graph: RDF::Graph.new }),
+                    DummyPerson.new({ id: '4', surname: 'Stark', forename: 'Bran', graph: RDF::Graph.new })] }
     it 'should take an array of objects and order them given one parameter' do
       ordered_people = extended_class.order_list(people, :forename)
       expect(ordered_people[0].forename).to eq 'Arya'
@@ -151,16 +157,15 @@ describe Grom::Helpers do
       expect(ordered_people[3].forename).to eq 'Daenerys'
     end
 
-    xit 'should take an array of objects and order them given two parameters - a surname and forename - when one person has no forename' do
-      people << DummyPerson.new({ id: '5', surname: 'Williams', graph: RDF::Graph.new })
-      ordered_people = extended_class.order_list(people, :surname, :forename)
-      p ordered_people
+    it 'should take an array of objects and order them given two parameters - a surname and forename - when one person has no forename' do
+      ordered_people = extended_class.order_list(people_with_nil_property, :surname, :forename)
 
-      expect(ordered_people[0].surname).to eq 'Williams'
-      expect(ordered_people[1].forename).to eq 'Arya'
-      expect(ordered_people[2].forename).to eq 'Bran'
-      expect(ordered_people[3].forename).to eq 'Sansa'
-      expect(ordered_people[4].forename).to eq 'Daenerys'
+      expect(ordered_people[0].id).to eq '6'
+      expect(ordered_people[1].id).to eq '1'
+      expect(ordered_people[2].id).to eq '4'
+      expect(ordered_people[3].id).to eq '2'
+      expect(ordered_people[4].id).to eq '3'
+      expect(ordered_people[5].id).to eq '5'
     end
   end
 
