@@ -13,4 +13,12 @@ class DummyPerson < Grom::Base
         gender: 'gender'
     }
   end
+
+  def sittings
+    @sittings
+  end
+
+  def sittings=(arr)
+    @sittings = arr
+  end
 end
