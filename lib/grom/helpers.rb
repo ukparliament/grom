@@ -59,8 +59,14 @@ module Grom
 
     def order_list(arr, *parameters)
       arr.sort_by do |obj|
-        parameters.map{ |param| obj.send(param) }
+        parameters.map do |param|
+          obj.send(param)
+        end
       end
+    end
+
+    def order_list_by_through(arr, through_association, property)
+      arr.map{ |obj| obj.send(through_association) }.flatten.sort{ |a, b| a[property] <=> b[property] }
     end
   end
 end

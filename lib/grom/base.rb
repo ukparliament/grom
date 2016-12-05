@@ -15,7 +15,7 @@ module Grom
       attributes.each do |k, v|
         translated_key = self.class.property_translator[k]
         v = self.class.create_property_name(self.class.get_id(v)) if (v =~ URI::regexp) == 0
-        unless (v.nil? || translated_key.nil?)
+        unless v.nil? || translated_key.nil?
           instance_variable_set("@#{translated_key}", v)
           self.class.send(:attr_reader, translated_key)
         end

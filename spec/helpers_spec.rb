@@ -123,10 +123,10 @@ describe Grom::Helpers do
   end
 
   describe '#order_list' do
-    let(:people) { [DummyPerson.new({id: '3', surname: 'Targaryen', forename: 'Daenerys', graph: RDF::Graph.new}),
-                    DummyPerson.new({id: '2', surname: 'Stark', forename: 'Sansa', graph: RDF::Graph.new}),
-                    DummyPerson.new({id: '1', surname: 'Stark', forename: 'Arya', graph: RDF::Graph.new}),
-                    DummyPerson.new({id: '4', surname: 'Stark', forename: 'Bran', graph: RDF::Graph.new})] }
+    let(:people) { [DummyPerson.new({ id: '3', surname: 'Targaryen', forename: 'Daenerys', graph: RDF::Graph.new }),
+                    DummyPerson.new({ id: '2', surname: 'Stark', forename: 'Sansa', graph: RDF::Graph.new }),
+                    DummyPerson.new({ id: '1', surname: 'Stark', forename: 'Arya', graph: RDF::Graph.new }),
+                    DummyPerson.new({ id: '4', surname: 'Stark', forename: 'Bran', graph: RDF::Graph.new })] }
     it 'should take an array of objects and order them given one parameter' do
       ordered_people = extended_class.order_list(people, :forename)
       expect(ordered_people[0].forename).to eq 'Arya'
@@ -149,6 +149,34 @@ describe Grom::Helpers do
       expect(ordered_people[1].forename).to eq 'Sansa'
       expect(ordered_people[2].forename).to eq 'Bran'
       expect(ordered_people[3].forename).to eq 'Daenerys'
+    end
+
+    xit 'should take an array of objects and order them given two parameters - a surname and forename - when one person has no forename' do
+      people << DummyPerson.new({ id: '5', surname: 'Williams', graph: RDF::Graph.new })
+      ordered_people = extended_class.order_list(people, :surname, :forename)
+      p ordered_people
+
+      expect(ordered_people[0].surname).to eq 'Williams'
+      expect(ordered_people[1].forename).to eq 'Arya'
+      expect(ordered_people[2].forename).to eq 'Bran'
+      expect(ordered_people[3].forename).to eq 'Sansa'
+      expect(ordered_people[4].forename).to eq 'Daenerys'
+    end
+  end
+
+  describe '#order_list_by_through' do
+    it 'should take an array of objects and order them by the given through property' do
+      people = [DummyPerson.new({ id: '3', surname: 'Targaryen', forename: 'Daenerys', graph: RDF::Graph.new }),
+                  DummyPerson.new({ id: '2', surname: 'Stark', forename: 'Sansa', graph: RDF::Graph.new })]
+      people[0].sittings=([{ sittingStartDate: "2015-05-07" }, { sittingStartDate: "2005-05-03", sittingEndDate: "2000-03-01" }])
+      people[1].sittings=([{ sittingStartDate: "2010-05-06", sittingEndDate: "2015-03-30" }])
+      ordered_sittings = extended_class.order_list_by_through(people, :sittings, :sittingStartDate)
+
+      expect(ordered_sittings[0][:sittingStartDate]).to eq "2005-05-03"
+      expect(ordered_sittings[1][:sittingStartDate]).to eq "2010-05-06"
+      expect(ordered_sittings[2][:sittingStartDate]).to eq "2015-05-07"
+
+
     end
   end
 
