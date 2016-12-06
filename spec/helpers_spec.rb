@@ -14,7 +14,7 @@ describe Grom::Helpers do
     end
 
     it 'should return an endpoint when given a class, an associated class and an options hash with optional set' do
-      url = extended_class.associations_url_builder(dummy, "Party", {optional: "current" })
+      url = extended_class.associations_url_builder(dummy, "Party", {optional: ["current"] })
       expect(url).to eq "#{API_ENDPOINT}/dummy_people/1/parties/current.ttl"
     end
 
@@ -159,7 +159,6 @@ describe Grom::Helpers do
 
     it 'should take an array of objects and order them given two parameters - a surname and forename - when one person has no forename' do
       ordered_people = extended_class.order_list(people_with_nil_property, :surname, :forename)
-      p ordered_people
       expect(ordered_people[0].id).to eq '5'
       expect(ordered_people[1].id).to eq '6'
       expect(ordered_people[2].id).to eq '1'
