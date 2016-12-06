@@ -35,26 +35,26 @@ module Grom
     end
 
     def self.has_many(association)
-      self.class_eval("def #{association}(optional=nil); #{create_class_name(association)}.has_many_query(self, optional); end")
+      self.class_eval("def #{association}(*options); #{create_class_name(association)}.has_many_query(self, *options); end")
     end
 
     def self.has_many_through(association, through_association)
       self.has_many(through_association[:via])
-      self.class_eval("def #{association}(optional=nil); #{create_class_name(association)}.has_many_through_query(self, #{create_class_name(through_association[:via])}.new({}).class.name, optional); end")
+      self.class_eval("def #{association}(*options); #{create_class_name(association)}.has_many_through_query(self, #{create_class_name(through_association[:via])}.new({}).class.name, *options); end")
     end
 
     def self.has_one(association)
-      self.class_eval("def #{association}(optional=nil); #{create_class_name(association)}.has_one_query(self, optional); end")
+      self.class_eval("def #{association}(*options); #{create_class_name(association)}.has_one_query(self, *options); end")
     end
 
-    def self.has_many_query(owner_object, optional=nil)
-      endpoint_url = associations_url_builder(owner_object, self.name, {optional: optional })
+    def self.has_many_query(owner_object, *options)
+      endpoint_url = associations_url_builder(owner_object, self.name, {optional: options })
       graph_data = get_graph_data(endpoint_url)
       self.object_array_maker(graph_data)
     end
 
-    def self.has_one_query(owner_object, optional=nil)
-      endpoint_url = associations_url_builder(owner_object, self.name, {optional: optional, single: true })
+    def self.has_one_query(owner_object, *options)
+      endpoint_url = associations_url_builder(owner_object, self.name, {optional: options, single: true })
       graph_data = get_graph_data(endpoint_url)
       self.object_single_maker(graph_data)
     end
@@ -74,9 +74,9 @@ module Grom
       self.object_array_maker(graph_data).first
     end
 
-    def self.has_many_through_query(owner_object, through_class, optional=nil)
+    def self.has_many_through_query(owner_object, through_class, *options)
       through_property_plural = create_plural_property_name(through_class)
-      endpoint_url = associations_url_builder(owner_object, self.name, {optional: optional })
+      endpoint_url = associations_url_builder(owner_object, self.name, {optional: options })
       self.through_getter_setter(through_property_plural)
       graph = get_graph_data(endpoint_url)
       self.map_hashes_to_objects(through_split_graph(graph), through_property_plural)
