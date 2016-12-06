@@ -7,7 +7,15 @@ module Grom
       id = owner_object.id
       associated_class_name = options[:single].nil? ? create_plural_property_name(associated_class_name) : create_property_name(associated_class_name)
       endpoint = "#{find_base_url_builder(owner_object.class.name, id)}/#{associated_class_name}"
-      endpoint += options[:optional].nil? ? '.ttl' : "/#{options[:optional]}.ttl"
+      if options[:optional].nil?
+        endpoint += '.ttl'
+      else
+        options[:optional].each do |option|
+          endpoint += "/#{option}" unless option.nil?
+        end
+        endpoint += '.ttl'
+      end
+      endpoint
     end
 
     def find_base_url_builder(class_name, id)
