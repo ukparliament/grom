@@ -1,0 +1,3 @@
+@prefix example: <http://id.example.com/schema/> .
+
+<http://id.example.com/81> example:partyName "Liberal Democrat"

@@ -7,6 +7,7 @@ PERSON_ONE_HASH = { people: [
 PEOPLE_JSON_LD = "{\"@graph\":[{\"@id\":\"http://id.example.com/1\",\"http://id.example.com/schema/dateOfBirth\":{\"@value\":\"1947-06-29\",\"@type\":\"http://www.w3.org/2001/XMLSchema#date\"},\"http://id.example.com/schema/forename\":\"Daenerys\",\"http://id.example.com/schema/middleName\":\"Khaleesi\",\"http://id.example.com/schema/surname\":\"Targaryen\"},{\"@id\":\"http://id.example.com/2\",\"http://id.example.com/schema/dateOfBirth\":{\"@value\":\"1954-01-12\",\"@type\":\"http://www.w3.org/2001/XMLSchema#date\"},\"http://id.example.com/schema/forename\":\"Arya\",\"http://id.example.com/schema/middleName\":\"The Blind Girl\",\"http://id.example.com/schema/surname\":\"Stark\"}]}"
 
 PERSON_ONE_TTL = "<http://id.example.com/1> <http://id.example.com/schema/forename> \"Daenerys\" .\n <http://id.example.com/1> <http://id.example.com/schema/surname> \"Targaryen\" .\n <http://id.example.com/1> <http://id.example.com/schema/middleName> \"Khaleesi\" .\n <http://id.example.com/1> <http://id.example.com/schema/dateOfBirth> \"1947-06-29\"^^<http://www.w3.org/2001/XMLSchema#date> .\n <http://id.example.com/1> <http://id.example.com/schema/gender> <http://id.example.com/schema/Female> .\n"
+# PERSON_ONE_TTL = "@prefix example: <http://id.example.com/schema/> .\n <http://id.example.com/1> example:forename \"Daenerys\" ;\n example:surname \"Targaryen\" .\n <http://id.example.com/1> <http://id.example.com/schema/middleName> \"Khaleesi\" .\n <http://id.example.com/1> <http://id.example.com/schema/dateOfBirth> \"1947-06-29\"^^<http://www.w3.org/2001/XMLSchema#date> .\n <http://id.example.com/1> <http://id.example.com/schema/gender> <http://id.example.com/schema/Female> .\n"
 PEOPLE_TTL = "<http://id.example.com/1> <http://id.example.com/schema/forename> \"Daenerys\" .\n <http://id.example.com/1> <http://id.example.com/schema/surname> \"Targaryen\" .\n <http://id.example.com/1> <http://id.example.com/schema/middleName> \"Khaleesi\" .\n <http://id.example.com/1> <http://id.example.com/schema/dateOfBirth> \"1947-06-29\"^^<http://www.w3.org/2001/XMLSchema#date> .\n <http://id.example.com/1> <http://id.example.com/schema/gender> <http://id.example.com/schema/Female> .\n <http://id.example.com/2> <http://id.example.com/schema/forename> \"Arya\" .\n <http://id.example.com/2> <http://id.example.com/schema/surname> \"Stark\" .\n <http://id.example.com/2> <http://id.example.com/schema/middleName> \"The Blind Girl\" .\n <http://id.example.com/2> <http://id.example.com/schema/dateOfBirth> \"1954-01-12\"^^<http://www.w3.org/2001/XMLSchema#date> .\n <http://id.example.com/2> <http://id.example.com/schema/gender> <http://id.example.com/schema/Female> .\n "
 PERSON_TWO_TTL = "<http://id.example.com/2> <http://id.example.com/schema/forename> \"Arya\" .\n <http://id.example.com/2> <http://id.example.com/schema/surname> \"Stark\" .\n <http://id.example.com/2> <http://id.example.com/schema/middleName> \"The Blind Girl\" .\n <http://id.example.com/2> <http://id.example.com/schema/dateOfBirth> \"1954-01-12\"^^<http://www.w3.org/2001/XMLSchema#date> .\n <http://id.example.com/2> <http://id.example.com/schema/gender> <http://id.example.com/schema/Female> .\n"
 
@@ -51,9 +52,10 @@ PEOPLE_HASH = [
 
 ONE_STATEMENT_STUB = RDF::Statement.new(RDF::URI.new("http://id.example.com/1"), RDF::URI.new("http://id.example.com/schema/forename"), 'Daenerys')
 
-PARTY_ONE_TTL = "<http://id.example.com/81> <http://id.example.com/schema/partyName> \"Liberal Democrat\" .\n"
+PARTY_ONE_TTL_OLD = "<http://id.example.com/81> <http://id.example.com/schema/partyName> \"Liberal Democrat\" .\n"
+PARTY_ONE_TTL = "@prefix example: <http://id.example.com/schema/> .\n <http://id.example.com/81> example:partyName \"Liberal Democrat\" .\n"
 PARTY_ONE_GRAPH = RDF::Graph.new
-RDF::NTriples::Reader.new(PARTY_ONE_TTL) do |reader|
+RDF::NTriples::Reader.new(PARTY_ONE_TTL_OLD) do |reader|
     reader.each_statement do |statement|
         PARTY_ONE_GRAPH << statement
     end

@@ -4,8 +4,9 @@ module Grom
   module GraphMapper
 
     def get_graph_data(uri)
-      ttl_data = Net::HTTP.get(URI(uri))
-      create_graph_from_ttl(ttl_data)
+      RDF::Graph.load(uri, format: :ttl)
+      # ttl_data = Net::HTTP.get(URI(uri))
+      # create_graph_from_ttl(ttl_data)
     end
 
     def convert_to_ttl(data)
@@ -17,13 +18,14 @@ module Grom
     end
 
     def create_graph_from_ttl(ttl_data)
-      graph = RDF::Graph.new
-      RDF::NTriples::Reader.new(ttl_data) do |reader|
-        reader.each_statement do |statement|
-          graph << statement
-        end
-      end
-      graph
+      # graph = RDF::Graph.new
+      # RDF::Turtle::Reader.new(ttl_data) do |reader|
+      #   reader.each_statement do |statement|
+      #     graph << statement
+      #   end
+      # end
+      # graph
+      RDF::Graph.load(ttl_data, format: :ttl)
     end
 
     def get_id(uri)

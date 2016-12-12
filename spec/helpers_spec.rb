@@ -61,7 +61,7 @@ describe Grom::Helpers do
     end
   end
 
-  describe '#collective_graph' do
+  xdescribe '#collective_graph' do
     it 'should return the collective graph for the objects in the array' do
       dummy_people = DummyPerson.all
       collective_graph = extended_class.collective_graph(dummy_people)
@@ -72,7 +72,7 @@ describe Grom::Helpers do
     end
   end
 
-  describe '#collective_has_many_graph' do
+  xdescribe '#collective_has_many_graph' do
     it 'should return a graph that contains the owner and the associated objects' do
       collective_graph = extended_class.collective_has_many_graph(dummy, dummy.dummy_contact_points)
       email_pattern = RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/email"), :object)

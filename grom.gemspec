@@ -21,7 +21,9 @@ Gem::Specification.new do |s|
 
   # the below are test dependencies
   s.add_development_dependency "rspec-rails"
-  s.add_development_dependency "rdf", "2.1.0"
+  s.add_development_dependency "linkeddata"
+  # s.add_development_dependency "rdf", "2.1.0"
+  # s.add_development_dependency "rdf-turtle"
   s.add_development_dependency "webmock"
   s.add_development_dependency "simplecov"
 
