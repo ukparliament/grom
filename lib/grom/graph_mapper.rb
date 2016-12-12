@@ -1,29 +1,11 @@
 require 'grom'
+require 'rdf/trig'
 
 module Grom
   module GraphMapper
 
     def get_graph_data(uri)
-      ttl_data = Net::HTTP.get(URI(uri))
-      create_graph_from_ttl(ttl_data)
-    end
-
-    def convert_to_ttl(data)
-      result = ""
-      data.each_statement do |statement|
-        result << RDF::NTriples::Writer.serialize(statement)
-      end
-      result
-    end
-
-    def create_graph_from_ttl(ttl_data)
-      graph = RDF::Graph.new
-      RDF::NTriples::Reader.new(ttl_data) do |reader|
-        reader.each_statement do |statement|
-          graph << statement
-        end
-      end
-      graph
+      RDF::Graph.load(uri, format: :ttl)
     end
 
     def get_id(uri)

@@ -47,52 +47,41 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    stub_request(:get, "#{API_ENDPOINT}/dummy_people/1/dummy_parties.ttl").
-        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Host'=>"#{API_ENDPOINT_HOST}", 'User-Agent'=>'Ruby'}).
-        to_return(:status => 200, :body => BLANK_PARTY_MEMBERSHIP_TTL_BY_PARTY, :headers => {})
 
     stub_request(:get, "#{API_ENDPOINT}/dummy_people/1/dummy_contact_points.ttl").
-        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Host'=>"#{API_ENDPOINT_HOST}", 'User-Agent'=>'Ruby'}).
+        with(:headers => {'Accept'=>'text/turtle, text/rdf+turtle, application/turtle, application/x-turtle, application/trig, application/x-trig, application/n-triples, text/plain;q=0.2, */*;q=0.1', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
         to_return(:status => 200, :body => CONTACT_POINT_TTL, :headers => {})
 
     stub_request(:get, "http://example.com/dummy_people/1/dummy_cat.ttl").
-        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Host'=>'example.com', 'User-Agent'=>'Ruby'}).
+        with(:headers => {'Accept'=>'text/turtle, text/rdf+turtle, application/turtle, application/x-turtle, application/trig, application/x-trig, application/n-triples, text/plain;q=0.2, */*;q=0.1', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
         to_return(:status => 200, :body => CAT_ONE_TTL, :headers => {})
 
-    stub_request(:get, "http://example.com/dummy_people.ttl").
-        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Host'=>'example.com', 'User-Agent'=>'Ruby'}).
-        to_return(:status => 200, :body => PEOPLE_TTL, :headers => {})
-
     stub_request(:get, "http://example.com/dummy_people/1.ttl").
-        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Host'=>'example.com', 'User-Agent'=>'Ruby'}).
+        with(:headers => {'Accept'=>'text/turtle, text/rdf+turtle, application/turtle, application/x-turtle, application/trig, application/x-trig, application/n-triples, text/plain;q=0.2, */*;q=0.1', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
         to_return(:status => 200, :body => PERSON_ONE_TTL, :headers => {})
 
     stub_request(:get, "http://example.com/dummy_people/current.ttl").
-        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Host'=>'example.com', 'User-Agent'=>'Ruby'}).
+        with(:headers => {'Accept'=>'text/turtle, text/rdf+turtle, application/turtle, application/x-turtle, application/trig, application/x-trig, application/n-triples, text/plain;q=0.2, */*;q=0.1', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
+        to_return(:status => 200, :body => PEOPLE_TTL, :headers => {})
+
+    stub_request(:get, "http://example.com/dummy_people.ttl").
+        with(:headers => {'Accept'=>'text/turtle, text/rdf+turtle, application/turtle, application/x-turtle, application/trig, application/x-trig, application/n-triples, text/plain;q=0.2, */*;q=0.1', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
         to_return(:status => 200, :body => PEOPLE_TTL, :headers => {})
 
     stub_request(:get, "http://example.com/dummy_people/members/current/banana.ttl").
-        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Host'=>'example.com', 'User-Agent'=>'Ruby'}).
+        with(:headers => {'Accept'=>'text/turtle, text/rdf+turtle, application/turtle, application/x-turtle, application/trig, application/x-trig, application/n-triples, text/plain;q=0.2, */*;q=0.1', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
         to_return(:status => 200, :body => PEOPLE_TTL, :headers => {})
 
     stub_request(:get, "http://example.com/dummy_dogs.ttl").
-        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Host'=>'example.com', 'User-Agent'=>'Ruby'}).
+        with(:headers => {'Accept'=>'text/turtle, text/rdf+turtle, application/turtle, application/x-turtle, application/trig, application/x-trig, application/n-triples, text/plain;q=0.2, */*;q=0.1', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
         to_return(:status => 200, :body => DOGS_TTL, :headers => {})
 
-    stub_request(:get, "http://example.com/dummy_dogs/1863.ttl").
-        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Host'=>'example.com', 'User-Agent'=>'Ruby'}).
-        to_return(:status => 200, :body => BUDDY_TTL, :headers => {})
-
-    stub_request(:get, "http://example.com/dummy_people/1/dummy_contact_points/current.ttl").
-        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Host'=>'example.com', 'User-Agent'=>'Ruby'}).
-        to_return(:status => 200, :body => CONTACT_POINT_TTL, :headers => {})
-
     stub_request(:get, "http://example.com/dummy_parties/81.ttl").
-        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Host'=>'example.com', 'User-Agent'=>'Ruby'}).
+        with(:headers => {'Accept'=>'text/turtle, text/rdf+turtle, application/turtle, application/x-turtle, application/trig, application/x-trig, application/n-triples, text/plain;q=0.2, */*;q=0.1', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
         to_return(:status => 200, :body => PARTY_ONE_TTL, :headers => {})
 
     stub_request(:get, "http://example.com/dummy_parties/81/dummy_members.ttl").
-        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Host'=>'example.com', 'User-Agent'=>'Ruby'}).
+        with(:headers => {'Accept'=>'text/turtle, text/rdf+turtle, application/turtle, application/x-turtle, application/trig, application/x-trig, application/n-triples, text/plain;q=0.2, */*;q=0.1', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
         to_return(:status => 200, :body => BLANK_PARTY_MEMBERSHIPS_TTL, :headers => {})
   end
 
