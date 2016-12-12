@@ -18,12 +18,10 @@ Gem::Specification.new do |s|
 
   s.add_dependency "rails", "~> 5.0.0", ">= 5.0.0.1"
   s.add_dependency "activesupport"
+  s.add_dependency "rdf-trig"
 
   # the below are test dependencies
   s.add_development_dependency "rspec-rails"
-  s.add_development_dependency "rdf-trig"
-  # s.add_development_dependency "rdf", "2.1.0"
-  # s.add_development_dependency "rdf-turtle"
   s.add_development_dependency "webmock"
   s.add_development_dependency "simplecov"
 
