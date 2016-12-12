@@ -16,7 +16,7 @@ describe Grom::Base do
       expect(dummy_person).to be_a DummyPerson
     end
 
-    it 'should return an object that has a graph method with the correct statements' do
+    xit 'should return an object that has a graph method with the correct statements' do
       expect(dummy_person).to respond_to(:graph)
       graph = dummy_person.graph
       expect(graph.query(forename_pattern).first_object.to_s).to eq 'Daenerys'
@@ -34,7 +34,7 @@ describe Grom::Base do
       expect(dummy_people[1]).to be_a DummyPerson
     end
 
-    it 'should return an array of two objects and each one should have a graph with the correct statements' do
+    xit 'should return an array of two objects and each one should have a graph with the correct statements' do
       daenerys_graph = dummy_people.select{ |o| o.id == '1' }.first.graph
       expect(daenerys_graph.query(forename_pattern).first_object.to_s).to eq 'Daenerys'
       expect(daenerys_graph.query(surname_pattern).first_object.to_s).to eq 'Targaryen'
@@ -134,7 +134,7 @@ describe Grom::Base do
     end
   end
 
-  describe '#graph' do
+  xdescribe '#graph' do
     it 'should return the graph for the object it is called on' do
       graph = dummy_person.graph
       expect(graph.query(surname_pattern).first_object.to_s).to eq 'Targaryen'

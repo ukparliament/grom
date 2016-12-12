@@ -42,29 +42,6 @@ module Grom
       ActiveSupport::Inflector.underscore(class_name).downcase
     end
 
-    def collective_graph(objects)
-      collective_graph = RDF::Graph.new
-      objects.each do |o|
-        collective_graph << o.graph
-      end
-      collective_graph
-    end
-
-    def collective_has_many_graph(owner, association)
-      owner.graph << collective_graph(association)
-    end
-
-    def collective_through_graph(owner, association, through_property)
-      graph = owner.graph
-      association.each do |associated_object|
-        graph << associated_object.graph
-        associated_object.send(through_property).each do |through_object|
-          graph << through_object.graph
-        end
-      end
-      graph
-    end
-
     def order_list(arr, *parameters)
       rejected = []
       arr.delete_if{ |obj| rejected << obj if parameters.any?{ |param| obj.send(param).nil? } }
