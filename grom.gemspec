@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency "rails", "~> 5.0.0", ">= 5.0.0.1"
   s.add_dependency "activesupport"
-  s.add_dependency "rdf-trig"
+  s.add_dependency "rdf-turtle"
 
   # the below are test dependencies
   s.add_development_dependency "rspec-rails"
