@@ -8,8 +8,22 @@ module Grom
       RDF::Graph.load(uri, format: :ttl)
     end
 
+    def get_ttl_data(uri)
+      Net::HTTP.get(URI(uri))
+    end
+
     def get_id(uri)
       uri == RDF.type.to_s ? 'type' : uri.to_s.split("/").last
+    end
+
+    def create_hash_from_ttl(ttl_data)
+      hash = {}
+      RDF::Turtle::Reader.new(ttl_data) do |reader|
+        reader.each_statement do |statement|
+          statement_mapper(statement, hash)
+        end
+      end
+      hash.values
     end
 
     def statements_mapper(graph)
@@ -22,6 +36,12 @@ module Grom
         hash[subject][get_id(s.predicate).to_sym] = s.object.to_s
       end
       hash.values
+    end
+
+    def statement_mapper(statement, hash)
+      subject = get_id(statement.subject)
+      hash[subject] ||= { :id => subject }
+      hash[subject][get_id(statement.predicate).to_sym] = statement.object.to_s
     end
 
     def through_split_graph(graph)

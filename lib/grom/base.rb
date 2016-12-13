@@ -26,8 +26,11 @@ module Grom
 
     def self.all(*options)
       endpoint_url = "#{all_base_url_builder(self.name, *options)}.ttl"
-      graph_data = get_graph_data(endpoint_url)
-      self.object_array_maker(graph_data)
+      ttl_data = get_ttl_data(endpoint_url)
+      create_hash_from_ttl(ttl_data).map do |hash|
+        self.new(hash)
+      end
+      # self.object_array_maker(graph_data)
     end
 
     def self.has_many(association)
