@@ -71,7 +71,6 @@ module Grom
       self.object_array_maker(ttl_data).first
     end
 
-
     def self.has_many_through_query(owner_object, through_class, *options)
       through_property_plural = create_plural_property_name(through_class)
       endpoint_url = associations_url_builder(owner_object, self.name, {optional: options })

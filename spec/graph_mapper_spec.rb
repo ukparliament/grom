@@ -13,7 +13,7 @@ describe Grom::GraphMapper do
     end
   end
 
-  describe '#statements_mapper' do
+  xdescribe '#statements_mapper' do
     it 'should return a hash with the mapped predicates and the respective objects from a graph' do
       arya = extended_class.statements_mapper(PEOPLE_GRAPH).select{ |o| o[:id] == '2' }.first
       expect(arya[:forename]).to eq 'Arya'
