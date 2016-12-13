@@ -20,14 +20,15 @@ module Grom
 
     def self.find(id)
       endpoint_url = "#{find_base_url_builder(self.name, id)}.ttl"
-      graph_data = get_graph_data(endpoint_url)
-      self.object_single_maker(graph_data)
+      ttl_data = get_ttl_data(endpoint_url)
+      self.object_single_maker(ttl_data)
     end
 
     def self.all(*options)
       endpoint_url = "#{all_base_url_builder(self.name, *options)}.ttl"
-      graph_data = get_graph_data(endpoint_url)
-      self.object_array_maker(graph_data)
+      ttl_data = get_ttl_data(endpoint_url)
+
+      self.object_array_maker(ttl_data)
     end
 
     def self.has_many(association)
@@ -45,14 +46,14 @@ module Grom
 
     def self.has_many_query(owner_object, *options)
       endpoint_url = associations_url_builder(owner_object, self.name, {optional: options })
-      graph_data = get_graph_data(endpoint_url)
-      self.object_array_maker(graph_data)
+      ttl_data = get_ttl_data(endpoint_url)
+      self.object_array_maker(ttl_data)
     end
 
     def self.has_one_query(owner_object, *options)
       endpoint_url = associations_url_builder(owner_object, self.name, {optional: options, single: true })
-      graph_data = get_graph_data(endpoint_url)
-      self.object_single_maker(graph_data)
+      ttl_data = get_ttl_data(endpoint_url)
+      self.object_single_maker(ttl_data)
     end
 
     def self.through_getter_setter(through_property_plural)
@@ -60,22 +61,22 @@ module Grom
       self.class_eval("def #{through_property_plural}; @#{through_property_plural}; end")
     end
 
-    def self.object_array_maker(graph_data)
-      self.statements_mapper(graph_data).map do |data|
-        self.new(data)
+    def self.object_array_maker(ttl_data)
+      create_hash_from_ttl(ttl_data).map do |hash|
+        self.new(hash)
       end
     end
 
-    def self.object_single_maker(graph_data)
-      self.object_array_maker(graph_data).first
+    def self.object_single_maker(ttl_data)
+      self.object_array_maker(ttl_data).first
     end
 
     def self.has_many_through_query(owner_object, through_class, *options)
       through_property_plural = create_plural_property_name(through_class)
       endpoint_url = associations_url_builder(owner_object, self.name, {optional: options })
       self.through_getter_setter(through_property_plural)
-      graph = get_graph_data(endpoint_url)
-      self.map_hashes_to_objects(through_split_graph(graph), through_property_plural)
+      ttl_data = get_ttl_data(endpoint_url)
+      self.map_hashes_to_objects(through_split_graph(ttl_data), through_property_plural)
     end
 
     def self.map_hashes_to_objects(hashes, through_property_plural)

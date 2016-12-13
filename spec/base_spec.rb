@@ -15,16 +15,6 @@ describe Grom::Base do
     it 'should return an instance of the class that it is called from - DummyPerson' do
       expect(dummy_person).to be_a DummyPerson
     end
-
-    xit 'should return an object that has a graph method with the correct statements' do
-      expect(dummy_person).to respond_to(:graph)
-      graph = dummy_person.graph
-      expect(graph.query(forename_pattern).first_object.to_s).to eq 'Daenerys'
-      expect(graph.query(surname_pattern).first_object.to_s).to eq 'Targaryen'
-      expect(graph.query(middle_name_pattern).first_object.to_s).to eq 'Khaleesi'
-      expect(graph.query(date_of_birth_pattern).first_object.to_s).to eq '1947-06-29'
-      expect(graph.query(gender_pattern).first_object.to_s).to eq 'http://id.example.com/schema/Female'
-    end
   end
 
   describe '#all' do
@@ -32,21 +22,6 @@ describe Grom::Base do
       expect(dummy_people.count).to eq 2
       expect(dummy_people[0]).to be_a DummyPerson
       expect(dummy_people[1]).to be_a DummyPerson
-    end
-
-    xit 'should return an array of two objects and each one should have a graph with the correct statements' do
-      daenerys_graph = dummy_people.select{ |o| o.id == '1' }.first.graph
-      expect(daenerys_graph.query(forename_pattern).first_object.to_s).to eq 'Daenerys'
-      expect(daenerys_graph.query(surname_pattern).first_object.to_s).to eq 'Targaryen'
-      expect(daenerys_graph.query(middle_name_pattern).first_object.to_s).to eq 'Khaleesi'
-      expect(daenerys_graph.query(date_of_birth_pattern).first_object.to_s).to eq '1947-06-29'
-      expect(daenerys_graph.query(gender_pattern).first_object.to_s).to eq 'http://id.example.com/schema/Female'
-      arya_graph = dummy_people.select{ |o| o.id == '2' }.first.graph
-      expect(arya_graph.query(forename_pattern).first_object.to_s).to eq 'Arya'
-      expect(arya_graph.query(surname_pattern).first_object.to_s).to eq 'Stark'
-      expect(arya_graph.query(middle_name_pattern).first_object.to_s).to eq 'The Blind Girl'
-      expect(arya_graph.query(date_of_birth_pattern).first_object.to_s).to eq '1954-01-12'
-      expect(arya_graph.query(gender_pattern).first_object.to_s).to eq 'http://id.example.com/schema/Female'
     end
 
     it 'given an optional argument, should return an array of two objects of type DummyPerson' do
@@ -74,7 +49,7 @@ describe Grom::Base do
 
   describe '#object_array_maker' do
     it 'should return an array of dummy_people when given graph data with all the right properties set' do
-      dummies = DummyPerson.object_array_maker(PEOPLE_GRAPH)
+      dummies = DummyPerson.object_array_maker(PEOPLE_TTL)
       daenerys_dummy = dummies.select{ |o| o.id == '1' }.first
       expect(daenerys_dummy.forename).to eq 'Daenerys'
       expect(daenerys_dummy.surname).to eq 'Targaryen'
@@ -90,7 +65,7 @@ describe Grom::Base do
 
   describe '#object_single_maker' do
     it 'should return a single object given graph data with all the right properties' do
-      dummy = DummyPerson.object_single_maker(PERSON_ONE_GRAPH)
+      dummy = DummyPerson.object_single_maker(PERSON_ONE_TTL)
       expect(dummy.forename).to eq 'Daenerys'
       expect(dummy.id).to eq '1'
       expect(dummy.surname).to eq 'Targaryen'
@@ -131,22 +106,6 @@ describe Grom::Base do
       DummyPerson.through_getter_setter('cats')
       expect(dummy_person).to respond_to(:cats)
       expect(dummy_person).to respond_to(:cats=)
-    end
-  end
-
-  xdescribe '#graph' do
-    it 'should return the graph for the object it is called on' do
-      graph = dummy_person.graph
-      expect(graph.query(surname_pattern).first_object.to_s).to eq 'Targaryen'
-      expect(graph.query(forename_pattern).first_object.to_s).to eq 'Daenerys'
-      expect(graph.query(middle_name_pattern).first_object.to_s).to eq 'Khaleesi'
-      expect(graph.query(date_of_birth_pattern).first_object.to_s).to eq '1947-06-29'
-      expect(graph.query(gender_pattern).first_object.to_s).to eq 'http://id.example.com/schema/Female'
-    end
-
-    it 'should return a graph even when there are single quotes in the ttl data' do
-      graph = DummyDog.find('1863').graph
-      expect(graph.query(name_pattern).first_object.to_s).to eq "B'uddy"
     end
   end
   
