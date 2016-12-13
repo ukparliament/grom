@@ -74,7 +74,7 @@ describe Grom::Base do
 
   describe '#object_array_maker' do
     it 'should return an array of dummy_people when given graph data with all the right properties set' do
-      dummies = DummyPerson.object_array_maker(PEOPLE_GRAPH)
+      dummies = DummyPerson.object_array_maker(PEOPLE_TTL)
       daenerys_dummy = dummies.select{ |o| o.id == '1' }.first
       expect(daenerys_dummy.forename).to eq 'Daenerys'
       expect(daenerys_dummy.surname).to eq 'Targaryen'
@@ -90,7 +90,7 @@ describe Grom::Base do
 
   describe '#object_single_maker' do
     it 'should return a single object given graph data with all the right properties' do
-      dummy = DummyPerson.object_single_maker(PERSON_ONE_GRAPH)
+      dummy = DummyPerson.object_single_maker(PERSON_ONE_TTL)
       expect(dummy.forename).to eq 'Daenerys'
       expect(dummy.id).to eq '1'
       expect(dummy.surname).to eq 'Targaryen'
