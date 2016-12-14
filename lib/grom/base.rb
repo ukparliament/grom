@@ -45,20 +45,20 @@ module Grom
     end
 
     def self.has_many_query(owner_object, *options)
-      endpoint_url = associations_url_builder(owner_object, self.name, {optional: options })
+      endpoint_url = associations_url_builder(owner_object, self.name, {optional: options})
       ttl_data = get_ttl_data(endpoint_url)
       self.object_array_maker(ttl_data)
     end
 
     def self.has_one_query(owner_object, *options)
-      endpoint_url = associations_url_builder(owner_object, self.name, {optional: options, single: true })
+      endpoint_url = associations_url_builder(owner_object, self.name, {optional: options, single: true})
       ttl_data = get_ttl_data(endpoint_url)
       self.object_single_maker(ttl_data)
     end
 
-    def self.through_getter_setter(through_property_plural)
-      self.class_eval("def #{through_property_plural}=(array); @#{through_property_plural} = array; end")
-      self.class_eval("def #{through_property_plural}; @#{through_property_plural}; end")
+    def self.property_getter_setter(property_name)
+      self.class_eval("def #{property_name}=(value); @#{property_name} = value; end")
+      self.class_eval("def #{property_name}; @#{property_name}; end")
     end
 
     def self.object_array_maker(ttl_data)
@@ -73,8 +73,8 @@ module Grom
 
     def self.has_many_through_query(owner_object, through_class, *options)
       through_property_plural = create_plural_property_name(through_class)
-      endpoint_url = associations_url_builder(owner_object, self.name, {optional: options })
-      self.through_getter_setter(through_property_plural)
+      endpoint_url = associations_url_builder(owner_object, self.name, {optional: options})
+      self.property_getter_setter(through_property_plural)
       ttl_data = get_ttl_data(endpoint_url)
       self.map_hashes_to_objects(through_split_graph(ttl_data), through_property_plural)
     end
@@ -89,6 +89,47 @@ module Grom
         associated_object.send((through_property_plural + '=').to_sym, through_obj_array)
         associated_object
       end
+    end
+
+    def self.all_with(*options, with)
+      # first loop
+      endpoint_url = "#{all_base_url_builder(self.name, *options)}.ttl"
+      ttl_data = get_ttl_data(endpoint_url)
+      hash = {}
+      RDF::Turtle::Reader.new(ttl_data) do |reader|
+        reader.each_statement do |statement|
+          subject = get_id(statement.subject)
+          hash[subject] ||= {:id => subject}
+          if(get_id(statement.predicate) == "connect")
+            (hash[subject][get_id(statement.predicate).to_sym] ||= []) << get_id(statement.object.to_s)
+          else
+            hash[subject][get_id(statement.predicate).to_sym] = statement.object.to_s
+          end
+        end
+      end
+      all_hashes = hash.values
+
+      # all_hashes = create_hash_from_ttl(ttl_data)
+      with.each do |property|
+        self.property_getter_setter(property)
+      end
+
+      # second loop
+      owner_object_hashes, associated_hashes = all_hashes.partition do |h|
+        get_id(h[:type]) == self.name.to_s
+      end
+
+      # third loop
+      owner_object_array = owner_object_hashes.map { |owner_hash| self.new(owner_hash) }
+
+      # fourth loop
+      owner_object_array.each do |object|
+        associated_hashes.select { |h| h[:connect].include?(object.id) }.each do |associated_hash|
+          associated_object_name = get_id(associated_hash[:type])
+          object.send((create_property_name(associated_object_name) + '=').to_sym, associated_object_name.constantize.new(associated_hash))
+        end
+      end
+
     end
   end
 end
