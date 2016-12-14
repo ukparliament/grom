@@ -108,8 +108,8 @@ module Grom
         end
       end
       all_hashes = hash.values
-
       # all_hashes = create_hash_from_ttl(ttl_data)
+
       with.each do |property|
         self.property_getter_setter(property)
       end
@@ -120,15 +120,25 @@ module Grom
       end
 
       # third loop
-      owner_object_array = owner_object_hashes.map { |owner_hash| self.new(owner_hash) }
-
-      # fourth loop
-      owner_object_array.each do |object|
+      owner_object_array = []
+      owner_object_hashes.each do |owner_hash|
+        object = self.new(owner_hash)
         associated_hashes.select { |h| h[:connect].include?(object.id) }.each do |associated_hash|
           associated_object_name = get_id(associated_hash[:type])
           object.send((create_property_name(associated_object_name) + '=').to_sym, associated_object_name.constantize.new(associated_hash))
         end
+        owner_object_array << object
       end
+
+      owner_object_array
+
+      # fourth loop
+      # owner_object_array.each do |object|
+      #   associated_hashes.select { |h| h[:connect].include?(object.id) }.each do |associated_hash|
+      #     associated_object_name = get_id(associated_hash[:type])
+      #     object.send((create_property_name(associated_object_name) + '=').to_sym, associated_object_name.constantize.new(associated_hash))
+      #   end
+      # end
 
     end
   end
