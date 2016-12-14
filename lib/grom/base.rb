@@ -100,7 +100,7 @@ module Grom
         reader.each_statement do |statement|
           subject = get_id(statement.subject)
           hash[subject] ||= {:id => subject}
-          predicate = get_id(statement_predicate)
+          predicate = get_id(statement.predicate)
           if(predicate == "connect")
             (hash[subject][predicate.to_sym] ||= []) << get_id(statement.object.to_s)
           else
