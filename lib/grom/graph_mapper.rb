@@ -24,8 +24,9 @@ module Grom
 
     def statement_mapper(statement, hash)
       subject = get_id(statement.subject)
-      hash[subject] ||= { :id => subject }
+      hash[subject] ||= { :id => subject, :statements => [] }
       hash[subject][get_id(statement.predicate).to_sym] = statement.object.to_s
+      hash[subject][:statements] << statement
     end
 
     def through_split_graph(ttl_data)
