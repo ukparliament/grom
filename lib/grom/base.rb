@@ -144,7 +144,6 @@ module Grom
     end
 
     def self.json_ld(objects)
-      p objects.first
       json_ld = {}
       json_ld["@context"] = objects.first.context
       json_ld["@graph"] = objects.map do |object|
@@ -162,7 +161,6 @@ module Grom
         end
         hash
       end
-      p json_ld.to_s
       json_ld.to_s
     end
   end
