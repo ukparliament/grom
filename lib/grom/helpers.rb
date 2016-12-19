@@ -54,5 +54,26 @@ module Grom
     def order_list_by_through(arr, through_association, property)
       arr.map{ |obj| obj.send(through_association) }.flatten.sort{ |a, b| a[property] <=> b[property] }
     end
+
+    def json_ld(objects)
+      json_ld = {}
+      json_ld["@context"] = objects.first.context
+      json_ld["@graph"] = objects.map do |object|
+        hash = {}
+        object.instance_variables.each do |prop|
+          prop_name = "#{prop}"
+          str_prop = prop.to_s
+          if str_prop == "@id" || str_prop == "@type"
+            str_prop
+          else
+            str_prop = str_prop.tr('@', '')
+          end
+          # prop_key = prop.to_s.tr('@', '') unless prop.to_s == '@id' || prop.to_s == '@type'
+          hash[str_prop] = ActiveSupport::Inflector.camelize(object.send(prop_name.tr('@', '')))
+        end
+        hash
+      end
+      json_ld.to_s
+    end
   end
 end

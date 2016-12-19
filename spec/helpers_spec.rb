@@ -121,4 +121,12 @@ describe Grom::Helpers do
     end
   end
 
+  describe '#json_ld' do
+    it 'should return a json_ld representation of the given objects' do
+      json_ld_string = "{\"@context\"=>{:xsd=>\"http://www.w3.org/2001/XMLSchema#\", :DummySquirrel=>\"http://id.example.com/schema/DummySquirrel\", :name=>\"http://id.example.com/schema/name\", :date_of_birth=>{:@id=>\"http://id.example.com/schema/date_of_birth\", :@type=>\"xsd:integer\"}}, \"@graph\"=>[{\"@id\"=>\"927\", \"name\"=>\"Chip\", \"date_of_birth\"=>\"1960-01-01\", \"@type\"=>\"DummySquirrel\"}, {\"@id\"=>\"792\", \"name\"=>\"Dale\", \"date_of_birth\"=>\"1960-01-01\", \"@type\"=>\"DummySquirrel\"}]}"
+      squirrels = DummySquirrel.all
+      json_ld = extended_class.json_ld(squirrels)
+      expect(json_ld).to eq json_ld_string
+    end
+  end
 end
