@@ -61,14 +61,15 @@ module Grom
       json_ld["@graph"] = objects.map do |object|
         hash = {}
         object.instance_variables.each do |prop|
-          prop_name = "#{prop}"
+          prop_name = "#{prop}".tr('@', '')
           str_prop = prop.to_s
-          if str_prop == "@id" || str_prop == "@type"
-            str_prop
+          if str_prop == "@id"
+            hash[str_prop] = "#{object.id_prefix}#{(object.send(prop_name))}"
+          elsif str_prop == "@type"
+            hash[str_prop] = ActiveSupport::Inflector.camelize(object.send(prop_name))
           else
-            str_prop = str_prop.tr('@', '')
+            hash[str_prop.tr('@', '')] = object.send(prop_name)
           end
-          hash[str_prop] = ActiveSupport::Inflector.camelize(object.send(prop_name.tr('@', '')))
         end
         hash
       end
