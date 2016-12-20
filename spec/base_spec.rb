@@ -47,6 +47,10 @@ describe Grom::Base do
     end
   end
 
+  describe '#repository' do
+    it 'should '
+  end
+
   describe '#object_array_maker' do
     it 'should return an array of dummy_people when given graph data with all the right properties set' do
       dummies = DummyPerson.object_array_maker(PEOPLE_TTL)
