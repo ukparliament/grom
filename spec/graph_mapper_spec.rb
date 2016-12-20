@@ -15,16 +15,18 @@ describe Grom::GraphMapper do
   end
 
   describe '#statement_mapper' do
-    it 'should insert a hash with the id from a given statement in rdf format into the given hash' do
+    it 'should build a hash representation from a given statement in rdf format with the subject as key' do
       result = {}
       extended_class.statement_mapper(ONE_STATEMENT_STUB, result)
       expect(result["1"][:id]).to eq '1'
+      expect(result["1"][:forename]).to eq 'Daenerys'
     end
 
-    it 'should modify a given hash with the predicate and object from a given statement in ttl format' do
+    it 'should modify a given hash with the predicate and object from a given statement with an apostrophe in the name' do
       result = {}
-      extended_class.statement_mapper(ONE_STATEMENT_STUB, result)
-      expect(result).to eq 'bla'
+      extended_class.statement_mapper(BUDDY_STATEMENT, result)
+      expect(result["1863"][:id]).to eq '1863'
+      expect(result["1863"][:name]).to eq "B'uddy"
     end
   end
 
