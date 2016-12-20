@@ -1,15 +1,18 @@
 # Graph Object Mapper (Grom)
-Grom is a custom ORM that takes graph data and deserializes it into objects. It uses the ruby-rdf library. We created it in the context
-of UK Parliament new website. 
+Grom is a custom ORM that takes graph data and deserializes it into objects. It uses the [RDF.rb](https://github.com/ruby-rdf/rdf) library. It was created in the context
+of UK Parliament's new website. 
 
 ## Installation
+```apple js
+gem install grom
+```
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'grom', git: "https://github.com/ukpds/grom"
+gem 'grom'
 ```
 
-And then execute:
+Then execute:
 ```bash
 $ bundle
 ```
@@ -17,7 +20,7 @@ $ bundle
 ## Usage
 
 #### Set up
-You will need to set three constants in order for the package to work. 
+You will need to set three constants in order for the gem to work. 
 
 ```
 API_ENDPOINT = 'http://example.com'
@@ -25,14 +28,14 @@ API_ENDPOINT_HOST = 'example.com'
 DATA_URI_PREFIX = 'http://id.example.com'
 ```
 
-Your Api Endpoint will be where you are making the calls to get your graph data. <br>
-Your Data URI prefix is just the prefix that you use to define the entities in your triple store.
+The API Endpoint will be the endpoint where you are making the calls to get graph data. <br>
+The Data URI prefix is the prefix that you use to define the entities in your triple store.
 
 
 #### Models
-In order for the deserialization to work, your models will need to inherit from `Grom::Base` and you will need to define a `self.property_translator` hash where the key should be the predicate (without the prefix) and the value should be whatever you want to call the property of the object.
+Models inherit from `Grom::Base` and need a `self.property_translator` hash defined.   The keys are predicates (without the prefix) and the values are the translated object properties.
 
-Here is an example of a Person class.
+An example of a Person class.
 
 ```
 class Person < Grom::Base
@@ -49,10 +52,31 @@ class Person < Grom::Base
 end
 ```
 
+#### Retrieving Objects
+
+##### #all
+To return a collection of objects use the class method `all`.
+```apple js
+people = Person.all #=> returns an array of People objects
+```
+
+This method can take unlimited parameters.  Including a parameter appends it to the endpoint url creating a new url.  For example,
+
+```apple js
+people = Person.all('current') #=> returns an array of current People
+```
+This generates the endpoint url `http://#{API_ENDPOINT}/people/current.ttl` and returns a list of current people from there.
+
+##### #find
+To return a single object use the class method `find` with an id.
+```apple js
+person = Person.find('1') #=> returns a Person object
+```
+
 #### Associations
 
 ##### #has_many
-For a simple `has_many` association, you need to declare the association at the top of the model. For example, if `Person` has many `contact_points`, you need to have a `ContactPoint` class and you would declare the association at the top of the `Person` class.
+For a simple `has_many` association, declare the association at the top of the model. For example, if `Person` has many `contact_points`, create a `ContactPoint` class and declare the association at the top of the `Person` class.
 
 The name of the association must match the name of the class but it needs to be underscored and pluralized just like in ActiveRecord.
 
@@ -61,17 +85,28 @@ class Person < Grom::Base
   has_many :contact_points
 ```
 
+It is then possible to retrieve the contact_points for a person in the following way:
+
+```apple js
+person = Person.find('1')
+person.contact_points #=> returns an array of contact_points related to person
+```
 
 ##### #has_many_through
-For a `has_many_through` association, you need to declare the association at the top of the model. For example, if `Person` has many `parties` through `party_memberships`, you need to have a `Party` class and a `PartyMembership` and you would declare the association at the top of the `Person` class.
+For a `has_many_through` association, declare the association at the top of the model. For example, if `Person` has many `parties` through `party_memberships`, create a `Party` class and a `PartyMembership` class, then declare the association at the top of the `Person` class.
 
 ```
 class Person < Grom::Base
   has_many_through :parties, via: :party_memberships
 ```
 
-## Contributing
-Contribution directions go here.
+It is then possible to retrieve the parties for a person in the following way:
+
+```apple js
+person = Person.find('1')
+person.parties #=> returns an array of parties with the party_memberships stored as a hash
+```
+
 
 ## License
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
