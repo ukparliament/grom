@@ -14,6 +14,31 @@ describe Grom::GraphMapper do
     end
   end
 
+  describe '#create_hash_from_ttl' do
+
+    it 'should create an array of hash representations from ttl statements' do
+      result = extended_class.create_hash_from_ttl(PEOPLE_TTL)
+      expect(result[0][:id]).to eq '1'
+      expect(result[0][:forename]).to eq 'Daenerys'
+      expect(result[0][:surname]).to eq 'Targaryen'
+      expect(result[0][:middleName]).to eq 'Khaleesi'
+      expect(result[0][:dateOfBirth]).to eq '1947-06-29'
+      expect(result[1][:id]).to eq '2'
+      expect(result[1][:forename]).to eq 'Arya'
+      expect(result[1][:surname]).to eq 'Stark'
+      expect(result[1][:middleName]).to eq 'The Blind Girl'
+      expect(result[1][:dateOfBirth]).to eq '1954-01-12'
+    end
+
+    it 'should create an array of hash representations from ttl statements with apostrophes in the ttl' do
+      result = extended_class.create_hash_from_ttl(DOGS_TTL)
+      expect(result[0][:id]).to eq '1863'
+      expect(result[0][:name]).to eq "B'uddy"
+      expect(result[1][:id]).to eq '1866'
+      expect(result[1][:name]).to eq "F'ido"
+    end
+  end
+
   describe '#statement_mapper' do
     it 'should build a hash representation from a given statement in rdf format with the subject as key' do
       result = {}
@@ -22,7 +47,7 @@ describe Grom::GraphMapper do
       expect(result["1"][:forename]).to eq 'Daenerys'
     end
 
-    it 'should modify a given hash with the predicate and object from a given statement with an apostrophe in the name' do
+    it 'should build a hash representation from a given statement with an apostrophe in the name' do
       result = {}
       extended_class.statement_mapper(BUDDY_STATEMENT, result)
       expect(result["1863"][:id]).to eq '1863'
