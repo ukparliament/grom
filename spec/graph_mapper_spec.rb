@@ -14,12 +14,19 @@ describe Grom::GraphMapper do
     end
   end
 
-  xdescribe '#statements_mapper' do
-    it 'should return a hash with the mapped predicates and the respective objects from a graph' do
-      arya = extended_class.statements_mapper(PEOPLE_GRAPH).select{ |o| o[:id] == '2' }.first
-      expect(arya[:forename]).to eq 'Arya'
-      surname_pattern = RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/surname"), :object)
-      expect(arya[:graph].query(surname_pattern).first_object.to_s).to eq 'Stark'
+  describe '#statement_mapper' do
+    it 'should build a hash representation from a given statement in rdf format with the subject as key' do
+      result = {}
+      extended_class.statement_mapper(ONE_STATEMENT_STUB, result)
+      expect(result["1"][:id]).to eq '1'
+      expect(result["1"][:forename]).to eq 'Daenerys'
+    end
+
+    it 'should modify a given hash with the predicate and object from a given statement with an apostrophe in the name' do
+      result = {}
+      extended_class.statement_mapper(BUDDY_STATEMENT, result)
+      expect(result["1863"][:id]).to eq '1863'
+      expect(result["1863"][:name]).to eq "B'uddy"
     end
   end
 
