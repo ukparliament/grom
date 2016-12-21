@@ -12,6 +12,8 @@ describe Grom::Base do
   let(:gender_pattern) { RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/gender"), :object) }
   let(:people_with) { DummyPerson.all_with('apple', ['dummy_party']) }
 
+  let(:person_with) { DummyPerson.find_with('9', [{'dummy_party' => 'dummy_party_membership' }]) }
+
   describe '#find' do
     it 'should return an instance of the class that it is called from - DummyPerson' do
       expect(dummy_person).to be_a DummyPerson
@@ -56,6 +58,21 @@ describe Grom::Base do
     it 'should create a property .party for each person and the name should be Liberal Democrat' do
       expect(people_with[0].dummy_party.name).to eq 'Liberal Democrat'
       expect(people_with[1].dummy_party.name).to eq 'Liberal Democrat'
+    end
+  end
+
+  describe '#find_with' do
+    it 'should return a single person with her core properties' do
+      expect(person_with.forename).to eq 'Daenerys'
+      p person_with.dummy_parties
+    end
+
+    it 'should assign the correct sub-properties to the person' do
+      expect(person_with.dummy_parties.first.name).to eq 'Liberal Democrat'
+    end
+
+    it 'should assign the correct "sub-sub-properties" to each sub-property' do
+      expect(person_with.dummy_parties.first.dummy_party_memberships.first.end_date).to eq '1954-01-12'
     end
   end
 

@@ -142,5 +142,59 @@ module Grom
       # end
 
     end
+
+    def self.find_with(id, with)
+      endpoint_url = "#{find_base_url_builder(self.name, id)}.ttl"
+      ttl_data = get_ttl_data(endpoint_url)
+      hash = {}
+      sub_sub_hash = {}
+      RDF::Turtle::Reader.new(ttl_data) do |reader|
+        reader.each_statement do |statement|
+          if (statement.subject.to_s =~ URI::regexp) == 0
+            subject = get_id(statement.subject)
+            hash[subject] ||= {:id => subject}
+            predicate = get_id(statement.predicate)
+            hash[subject][predicate.to_sym] = statement.object.to_s
+          else
+            sub_sub_hash[subject] ||= {:id => subject}
+            predicate = get_id(statement.predicate)
+            if(predicate == "connect")
+              (sub_sub_hash[subject][predicate.to_sym] ||= []) << get_id(statement.object.to_s)
+            else
+              sub_sub_hash[subject][predicate.to_sym] = statement.object.to_s
+            end
+          end
+        end
+      end
+      all_hashes = hash.values
+      owner_object_hashes, associated_hashes = all_hashes.partition do |h|
+        get_id(h[:type]) == self.name.to_s
+      end
+
+      owner_object = self.new(owner_object_hashes.first)
+
+      with.each do |k|
+        associated_type = k.keys.first
+        self.property_getter_setter(create_plural_property_name(associated_type))
+        associated_array = []
+        associated_type_class = create_class_name(associated_type)
+        associated_hashes.select { |h| get_id(h[:type]) == associated_type_class }.each do |associated_hash|
+          associated_array << associated_type_class.constantize.new(associated_hash)
+        end
+        owner_object.send((create_property_name(create_plural_property_name(associated_type)) + '=').to_sym, associated_array)
+        associated_sub_type = k.values.first
+        owner_object.send(create_property_name(create_plural_property_name(associated_type))).each do |associated_object|
+          associated_object.class.property_getter_setter(create_plural_property_name(associated_sub_type))
+          sub_sub_array = []
+          associated_sub_type_class = create_class_name(associated_sub_type)
+          sub_sub_hash.values.select { |h| h[:connect].include?(associated_object.id) }.each do |h|
+            sub_sub_array << associated_sub_type_class.constantize.new(h)
+          end
+          associated_object.send((create_plural_property_name(associated_sub_type) + '=').to_sym, sub_sub_array)
+        end
+      end
+      owner_object
+    end
+
   end
 end
