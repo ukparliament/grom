@@ -17,6 +17,10 @@ class DummySquirrel < Grom::Base
     "http://id.example.com/"
   end
 
+  def self.type
+    "DummySquirrel"
+  end
+
   def self.property_translator
     {
         id: 'id',

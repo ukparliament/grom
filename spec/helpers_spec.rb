@@ -122,9 +122,13 @@ describe Grom::Helpers do
   end
 
   describe '#json_ld' do
-    it 'should return a json_ld representation of the given objects' do
-      json_ld_string = '{"@context"=>"{\"xsd\":\"http://www.w3.org/2001/XMLSchema#\",\"DummySquirrel\":\"http://id.example.com/schema/DummySquirrel\",\"name\":\"http://id.example.com/schema/name\",\"date_of_birth\":{\"@id\":\"http://id.example.com/schema/date_of_birth\",\"@type\":\"xsd:integer\"}}", "@graph"=>[{"@id"=>"http://id.example.com/927", "name"=>"Chip", "date_of_birth"=>"1960-01-01", "@type"=>"DummySquirrel"}, {"@id"=>"http://id.example.com/792", "name"=>"Dale", "date_of_birth"=>"1960-01-01", "@type"=>"DummySquirrel"}]}'
+    it 'should return a json_ld representation of the given objects excluding properties that are not in the property_translator' do
+      json_ld_string = '{"@context":{"xsd":"http://www.w3.org/2001/XMLSchema#","DummySquirrel":"http://id.example.com/schema/DummySquirrel","name":"http://id.example.com/schema/name","date_of_birth":{"@id":"http://id.example.com/schema/date_of_birth","@type":"xsd:date"}},"@graph":[{"@type":"DummySquirrel","@id":"http://id.example.com/927","name":"Chip","dateOfBirth":"1960-01-01"},{"@type":"DummySquirrel","@id":"http://id.example.com/792","name":"Dale","dateOfBirth":"1960-01-01"}]}'
+      DummySquirrel.property_getter_setter("banana")
       squirrels = DummySquirrel.all
+      squirrels.each do |s|
+        s.banana = "bla"
+      end
       json_ld = extended_class.json_ld(squirrels)
       expect(json_ld).to eq json_ld_string
     end

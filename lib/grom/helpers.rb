@@ -62,7 +62,7 @@ module Grom
       json_ld["@graph"] = data.map do |object|
         json_ld_object_mapper(object)
       end
-      json_ld
+      json_ld.to_json
     end
 
     def json_ld_object_mapper(object)
@@ -74,7 +74,7 @@ module Grom
           hash[string_variable_name] = "#{object.class.id_prefix}#{(object.send(getter))}"
         else
           property_name = object.class.property_translator.key(getter)
-          hash[property_name] = object.send(getter)
+          hash[property_name] = object.send(getter) unless property_name.nil?
         end
       end
       hash
