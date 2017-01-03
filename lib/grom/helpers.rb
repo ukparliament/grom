@@ -57,7 +57,7 @@ module Grom
 
     def json_ld(objects)
       json_ld = {}
-      json_ld["@context"] = objects.first.context.to_s
+      json_ld["@context"] = objects.first.context
       json_ld["@graph"] = objects.map do |object|
         hash = {}
         object.instance_variables.each do |prop|
@@ -73,7 +73,7 @@ module Grom
         end
         hash
       end
-      json_ld.to_s
+      json_ld
     end
   end
 end
