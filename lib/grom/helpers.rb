@@ -66,7 +66,7 @@ module Grom
           if str_prop == "@id"
             hash[str_prop] = "#{object.id_prefix}#{(object.send(prop_name))}"
           elsif str_prop == "@type"
-            hash[str_prop] = ActiveSupport::Inflector.camelize(object.send(prop_name))
+            hash[str_prop] = object.type
           else
             hash[str_prop.tr('@', '')] = object.send(prop_name)
           end
