@@ -58,7 +58,7 @@ module Grom
     def json_ld(data)
       data = [data] unless data.is_a?(Array)
       json_ld = {}
-      json_ld["@context"] = data.first.context
+      json_ld["@context"] = data.first.class.context
       json_ld["@graph"] = data.map do |object|
         json_ld_object_mapper(object)
       end
@@ -66,7 +66,7 @@ module Grom
     end
 
     def json_ld_object_mapper(object)
-      hash = { "@type": object.type }
+      hash = { "@type": object.class.type }
       object.instance_variables.each do |prop|
         prop_name = "#{prop}".tr('@', '')
         str_prop = prop.to_s
