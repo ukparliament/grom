@@ -67,13 +67,14 @@ module Grom
 
     def json_ld_object_mapper(object)
       hash = { "@type": object.class.type }
-      object.instance_variables.each do |prop|
-        prop_name = "#{prop}".tr('@', '')
-        str_prop = prop.to_s
-        if str_prop == "@id"
-          hash[str_prop] = "#{object.id_prefix}#{(object.send(prop_name))}"
+      object.class.instance_variables.each do |variable_name|
+        getter = "#{variable_name}".tr('@', '')
+        string_variable_name = variable_name.to_s
+        if string_variable_name == "@id"
+          hash[string_variable_name] = "#{object.class.id_prefix}#{(object.send(getter))}"
         else
-          hash[str_prop.tr('@', '')] = object.send(prop_name)
+          property_name = object.class.property_tranlsator.key(getter)
+          hash[property_name] = object.send(getter)
         end
       end
       hash
