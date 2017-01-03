@@ -73,7 +73,7 @@ module Grom
         if string_variable_name == "@id"
           hash[string_variable_name] = "#{object.class.id_prefix}#{(object.send(getter))}"
         else
-          property_name = object.class.property_tranlsator.key(getter)
+          property_name = object.class.property_translator.key(getter)
           hash[property_name] = object.send(getter)
         end
       end
