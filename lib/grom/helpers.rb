@@ -59,14 +59,12 @@ module Grom
       json_ld = {}
       json_ld["@context"] = objects.first.context
       json_ld["@graph"] = objects.map do |object|
-        hash = {}
+        hash = { "@type": object.type }
         object.instance_variables.each do |prop|
           prop_name = "#{prop}".tr('@', '')
           str_prop = prop.to_s
           if str_prop == "@id"
             hash[str_prop] = "#{object.id_prefix}#{(object.send(prop_name))}"
-          elsif str_prop == "@type"
-            hash[str_prop] = object.type
           else
             hash[str_prop.tr('@', '')] = object.send(prop_name)
           end
