@@ -56,7 +56,7 @@ module Grom
     end
 
     def json_ld(data)
-      [data] unless data.is_a?(Array)
+      data = [data] unless data.is_a?(Array)
       json_ld = {}
       json_ld["@context"] = data.first.context
       json_ld["@graph"] = data.map do |object|
