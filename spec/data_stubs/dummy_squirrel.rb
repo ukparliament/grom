@@ -1,19 +1,19 @@
 class DummySquirrel < Grom::Base
 
-  def context
-            '{
+  def self.context
+            {
                 "xsd": "http://www.w3.org/2001/XMLSchema#",
                 "DummySquirrel": "http://id.example.com/schema/DummySquirrel",
                 "name": "http://id.example.com/schema/name",
                 "date_of_birth":
                     {
                         "@id": "http://id.example.com/schema/date_of_birth",
-                        "@type": "xsd:integer"
+                        "@type": "xsd:date"
                     }
-            }'
+            }
   end
 
-  def id_prefix
+  def self.id_prefix
     "http://id.example.com/"
   end
 
@@ -21,8 +21,7 @@ class DummySquirrel < Grom::Base
     {
         id: 'id',
         name: 'name',
-        dateOfBirth: 'date_of_birth',
-        type: 'type'
+        dateOfBirth: 'date_of_birth'
     }
   end
 end
