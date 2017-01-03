@@ -55,23 +55,29 @@ module Grom
       arr.map{ |obj| obj.send(through_association) }.flatten.sort{ |a, b| a[property] <=> b[property] }
     end
 
-    def json_ld(objects)
+    def json_ld(data)
+      [data] if data.is_a?(Array)
       json_ld = {}
-      json_ld["@context"] = objects.first.context
-      json_ld["@graph"] = objects.map do |object|
-        hash = { "@type": object.type }
-        object.instance_variables.each do |prop|
-          prop_name = "#{prop}".tr('@', '')
-          str_prop = prop.to_s
-          if str_prop == "@id"
-            hash[str_prop] = "#{object.id_prefix}#{(object.send(prop_name))}"
-          else
-            hash[str_prop.tr('@', '')] = object.send(prop_name)
-          end
-        end
-        hash
+      json_ld["@context"] = data.first.context
+      json_ld["@graph"] = data.map do |object|
+        json_ld_object_mapper(object)
       end
       json_ld
     end
+
+    def json_ld_object_mapper(object)
+      hash = { "@type": object.type }
+      object.instance_variables.each do |prop|
+        prop_name = "#{prop}".tr('@', '')
+        str_prop = prop.to_s
+        if str_prop == "@id"
+          hash[str_prop] = "#{object.id_prefix}#{(object.send(prop_name))}"
+        else
+          hash[str_prop.tr('@', '')] = object.send(prop_name)
+        end
+      end
+      hash
+    end
+
   end
 end
