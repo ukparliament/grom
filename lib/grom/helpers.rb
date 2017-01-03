@@ -67,7 +67,7 @@ module Grom
 
     def json_ld_object_mapper(object)
       hash = { "@type": object.class.type }
-      object.class.instance_variables.each do |variable_name|
+      object.instance_variables.each do |variable_name|
         getter = "#{variable_name}".tr('@', '')
         string_variable_name = variable_name.to_s
         if string_variable_name == "@id"
