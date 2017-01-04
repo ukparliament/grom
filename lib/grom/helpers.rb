@@ -54,5 +54,31 @@ module Grom
     def order_list_by_through(arr, through_association, property)
       arr.map{ |obj| obj.send(through_association) }.flatten.sort{ |a, b| a[property] <=> b[property] }
     end
+
+    def json_ld(data)
+      data = [data] unless data.is_a?(Array)
+      json_ld = {}
+      json_ld["@context"] = data.first.class.context
+      json_ld["@graph"] = data.map do |object|
+        json_ld_object_mapper(object)
+      end
+      json_ld.to_json
+    end
+
+    def json_ld_object_mapper(object)
+      hash = { "@type": object.class.type }
+      object.instance_variables.each do |variable_name|
+        getter = "#{variable_name}".tr('@', '')
+        string_variable_name = variable_name.to_s
+        if string_variable_name == "@id"
+          hash[string_variable_name] = "#{object.class.id_prefix}#{(object.send(getter))}"
+        else
+          property_name = object.class.property_translator.key(getter)
+          hash[property_name] = object.send(getter) unless property_name.nil?
+        end
+      end
+      hash
+    end
+
   end
 end
