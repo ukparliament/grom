@@ -28,6 +28,23 @@ module Grom
       hash[subject][get_id(statement.predicate).to_sym] = statement.object.to_s
     end
 
+    def statements_with_mapper(ttl_data)
+      hash = {}
+      RDF::Turtle::Reader.new(ttl_data) do |reader|
+        reader.each_statement do |statement|
+          subject = get_id(statement.subject)
+          hash[subject] ||= {:id => subject}
+          predicate = get_id(statement.predicate)
+          if (predicate == "connect")
+            (hash[subject][predicate.to_sym] ||= []) << get_id(statement.object.to_s)
+          else
+            hash[subject][predicate.to_sym] = statement.object.to_s
+          end
+        end
+      end
+      hash.values
+    end
+
     def through_split_graph(ttl_data)
       associated_hash, through_hash = {}, {}
       RDF::Turtle::Reader.new(ttl_data) do |reader|

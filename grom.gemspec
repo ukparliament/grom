@@ -16,9 +16,9 @@ Gem::Specification.new do |s|
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
 
-  s.add_dependency "rails", "~> 5.0.0", ">= 5.0.0.1"
-  s.add_dependency "activesupport"
-  s.add_dependency "rdf-turtle"
+  s.add_runtime_dependency "rails", "~> 5.0.0", ">= 5.0.0.1"
+  s.add_runtime_dependency "activesupport"
+  s.add_runtime_dependency "rdf-turtle"
 
   # the below are test dependencies
   s.add_development_dependency "rspec-rails"

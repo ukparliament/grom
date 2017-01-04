@@ -95,6 +95,12 @@ CAT_ONE_TTL = "<http://id.example.com/123> <http://id.example.com/schema/name> \
 DOGS_TTL = "<http://id.example.com/1863> <http://id.example.com/schema/name> \"B'uddy\" .\n <http://id.example.com/1866> <http://id.example.com/schema/name> \"F'ido\" .\n"
 BUDDY_TTL = "<http://id.example.com/1863> <http://id.example.com/schema/name> \"B'uddy\" .\n"
 
+RDF::Turtle::Reader.new(BUDDY_TTL) do |reader|
+    reader.each_statement do |statement|
+        BUDDY_STATEMENT = statement
+    end
+end
+
 BUDDY_GRAPH = RDF::Graph.new
 RDF::NTriples::Reader.new(BUDDY_TTL) do |reader|
   reader.each_statement do |statement|
@@ -132,3 +138,5 @@ BLANK_PARTY_MEMBERSHIPS_HASH = {
 PEOPLE_AND_STUFF_TTL = "<http://id.example.com/1> <http://id.example.com/schema/forename> \"Daenerys\" .\n <http://id.example.com/1> <http://id.example.com/schema/surname> \"Targaryen\" .\n <http://id.example.com/1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.example.com/schema/DummyPerson> .\n <http://id.example.com/2> <http://id.example.com/schema/forename> \"Arya\" .\n <http://id.example.com/2> <http://id.example.com/schema/surname> \"Stark\" .\n  <http://id.example.com/2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.example.com/schema/DummyPerson> .\n <http://id.example.com/81> <http://id.example.com/schema/partyName> \"Liberal Democrat\" .\n <http://id.example.com/81> <http://id.example.com/schema/connect>  <http://id.example.com/1> .\n <http://id.example.com/81> <http://id.example.com/schema/connect>  <http://id.example.com/2> .\n  <http://id.example.com/81> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.example.com/schema/DummyParty> .\n"
 
 PERSON_AND_STUFF_TTL = "<http://id.example.com/1> <http://id.example.com/schema/forename> \"Daenerys\" .\n <http://id.example.com/1> <http://id.example.com/schema/surname> \"Targaryen\" .\n <http://id.example.com/1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.example.com/schema/DummyPerson> .\n <http://id.example.com/81> <http://id.example.com/schema/partyName> \"Liberal Democrat\" .\n <http://id.example.com/81> <http://id.example.com/schema/connect>  <http://id.example.com/1> .\n <http://id.example.com/81> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.example.com/schema/DummyParty> .\n _:node1504 <http://id.example.com/schema/connect> <http://id.example.com/81>.\n _:node1504 <http://id.example.com/schema/objectId> <http://id.example.com/42>.\n _:node1504 <http://id.example.com/schema/partyMembershipEndDate> \"1954-01-12\"^^<http://www.w3.org/2001/XMLSchema#date> .\n _:node1504 <http://id.example.com/schema/partyMembershipStartDate> \"1944-01-12\"^^<http://www.w3.org/2001/XMLSchema#date> .\n _:node1504 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.example.com/schema/DummyPartyMembership> .\n"
+
+SQUIRRELS_TTL = "<http://id.example.com/927> <http://id.example.com/schema/name> \"Chip\" .\n <http://id.example.com/927> <http://id.example.com/schema/dateOfBirth> \"1960-01-01\"^^<http://www.w3.org/2001/XMLSchema#date> .\n <http://id.example.com/792> <http://id.example.com/schema/name> \"Dale\" .\n <http://id.example.com/792> <http://id.example.com/schema/dateOfBirth> \"1960-01-01\"^^<http://www.w3.org/2001/XMLSchema#date> .\n"
