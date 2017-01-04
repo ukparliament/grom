@@ -10,6 +10,7 @@ describe Grom::Base do
   let(:middle_name_pattern) { RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/middleName"), :object) }
   let(:date_of_birth_pattern) { RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/dateOfBirth"), :object) }
   let(:gender_pattern) { RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/gender"), :object) }
+  let(:people_with) { DummyPerson.all_with('apple', ['dummy_party']) }
 
   describe '#find' do
     it 'should return an instance of the class that it is called from - DummyPerson' do
@@ -44,6 +45,17 @@ describe Grom::Base do
       fido = dogs.select { |d| d.id == '1866' }.first
       expect(buddy.name).to eq "B'uddy"
       expect(fido.name).to eq "F'ido"
+    end
+  end
+
+  describe '#all_with' do
+    it 'should return an array of two objects of type DummyPerson' do
+      expect(people_with.count).to eq 2
+    end
+
+    it 'should create a property .party for each person and the name should be Liberal Democrat' do
+      expect(people_with[0].dummy_party.name).to eq 'Liberal Democrat'
+      expect(people_with[1].dummy_party.name).to eq 'Liberal Democrat'
     end
   end
 
@@ -101,9 +113,9 @@ describe Grom::Base do
     end
   end
 
-  describe '#through_getter_setter' do
+  describe '#property_getter_setter' do
     it 'should create getter and setter methods for an object given an association' do
-      DummyPerson.through_getter_setter('cats')
+      DummyPerson.property_getter_setter('cats')
       expect(dummy_person).to respond_to(:cats)
       expect(dummy_person).to respond_to(:cats=)
     end
@@ -111,7 +123,7 @@ describe Grom::Base do
   
   describe '#map_hashes_to_objects' do
     it 'should return an array of objects, given hashes for the associated objects and through objects' do
-      DummyPerson.through_getter_setter("dummy_party_memberships")
+      DummyPerson.property_getter_setter("dummy_party_memberships")
       arr = DummyPerson.map_hashes_to_objects(BLANK_PARTY_MEMBERSHIPS_HASH, "dummy_party_memberships")
       expect(arr.first.forename).to eq 'Daenerys'
       expect(arr.first.surname).to eq 'Targaryen'

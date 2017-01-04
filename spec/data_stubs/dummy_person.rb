@@ -10,7 +10,8 @@ class DummyPerson < Grom::Base
         surname: 'surname',
         middleName: 'middle_name',
         dateOfBirth: 'date_of_birth',
-        gender: 'gender'
+        gender: 'gender',
+        type: 'type'
     }
   end
 

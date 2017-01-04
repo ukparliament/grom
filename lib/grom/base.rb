@@ -45,20 +45,20 @@ module Grom
     end
 
     def self.has_many_query(owner_object, *options)
-      endpoint_url = associations_url_builder(owner_object, self.name, {optional: options })
+      endpoint_url = associations_url_builder(owner_object, self.name, {optional: options})
       ttl_data = get_ttl_data(endpoint_url)
       self.object_array_maker(ttl_data)
     end
 
     def self.has_one_query(owner_object, *options)
-      endpoint_url = associations_url_builder(owner_object, self.name, {optional: options, single: true })
+      endpoint_url = associations_url_builder(owner_object, self.name, {optional: options, single: true})
       ttl_data = get_ttl_data(endpoint_url)
       self.object_single_maker(ttl_data)
     end
 
-    def self.through_getter_setter(through_property_plural)
-      self.class_eval("def #{through_property_plural}=(array); @#{through_property_plural} = array; end")
-      self.class_eval("def #{through_property_plural}; @#{through_property_plural}; end")
+    def self.property_getter_setter(property_name)
+      self.class_eval("def #{property_name}=(value); @#{property_name} = value; end")
+      self.class_eval("def #{property_name}; @#{property_name}; end")
     end
 
     def self.object_array_maker(ttl_data)
@@ -71,10 +71,23 @@ module Grom
       self.object_array_maker(ttl_data).first
     end
 
+    def self.object_with_array_maker(associated_hashes, owner_object_hashes)
+      owner_object_array = []
+      owner_object_hashes.each do |owner_hash|
+        object = self.new(owner_hash)
+        associated_hashes.select { |h| h[:connect].include?(object.id) }.each do |associated_hash|
+          associated_object_name = get_id(associated_hash[:type])
+          object.send((create_property_name(associated_object_name) + '=').to_sym, associated_object_name.constantize.new(associated_hash))
+        end
+        owner_object_array << object
+      end
+      owner_object_array
+    end
+
     def self.has_many_through_query(owner_object, through_class, *options)
       through_property_plural = create_plural_property_name(through_class)
-      endpoint_url = associations_url_builder(owner_object, self.name, {optional: options })
-      self.through_getter_setter(through_property_plural)
+      endpoint_url = associations_url_builder(owner_object, self.name, {optional: options})
+      self.property_getter_setter(through_property_plural)
       ttl_data = get_ttl_data(endpoint_url)
       self.map_hashes_to_objects(through_split_graph(ttl_data), through_property_plural)
     end
@@ -90,5 +103,19 @@ module Grom
         associated_object
       end
     end
+
+    def self.all_with(*options, with_properties)
+      endpoint_url = "#{all_base_url_builder(self.name, *options)}.ttl"
+      ttl_data = get_ttl_data(endpoint_url)
+      all_hashes = statements_with_mapper(ttl_data)
+      with_properties.each do |property|
+        self.property_getter_setter(property)
+      end
+      owner_object_hashes, associated_hashes = all_hashes.partition do |h|
+        get_id(h[:type]) == self.name.to_s
+      end
+      object_with_array_maker(associated_hashes, owner_object_hashes)
+    end
+
   end
 end
