@@ -71,6 +71,19 @@ module Grom
       self.object_array_maker(ttl_data).first
     end
 
+    def self.object_with_array_maker(associated_hashes, owner_object_hashes)
+      owner_object_array = []
+      owner_object_hashes.each do |owner_hash|
+        object = self.new(owner_hash)
+        associated_hashes.select { |h| h[:connect].include?(object.id) }.each do |associated_hash|
+          associated_object_name = get_id(associated_hash[:type])
+          object.send((create_property_name(associated_object_name) + '=').to_sym, associated_object_name.constantize.new(associated_hash))
+        end
+        owner_object_array << object
+      end
+      owner_object_array
+    end
+
     def self.has_many_through_query(owner_object, through_class, *options)
       through_property_plural = create_plural_property_name(through_class)
       endpoint_url = associations_url_builder(owner_object, self.name, {optional: options})
@@ -91,56 +104,18 @@ module Grom
       end
     end
 
-    def self.all_with(*options, with)
-      # first loop
+    def self.all_with(*options, with_properties)
       endpoint_url = "#{all_base_url_builder(self.name, *options)}.ttl"
       ttl_data = get_ttl_data(endpoint_url)
-      hash = {}
-      RDF::Turtle::Reader.new(ttl_data) do |reader|
-        reader.each_statement do |statement|
-          subject = get_id(statement.subject)
-          hash[subject] ||= {:id => subject}
-          predicate = get_id(statement.predicate)
-          if(predicate == "connect")
-            (hash[subject][predicate.to_sym] ||= []) << get_id(statement.object.to_s)
-          else
-            hash[subject][predicate.to_sym] = statement.object.to_s
-          end
-        end
-      end
-      all_hashes = hash.values
-      # all_hashes = create_hash_from_ttl(ttl_data)
-
-      with.each do |property|
+      all_hashes = statements_with_mapper(ttl_data)
+      with_properties.each do |property|
         self.property_getter_setter(property)
       end
-
-      # second loop
       owner_object_hashes, associated_hashes = all_hashes.partition do |h|
         get_id(h[:type]) == self.name.to_s
       end
-
-      # third loop
-      owner_object_array = []
-      owner_object_hashes.each do |owner_hash|
-        object = self.new(owner_hash)
-        associated_hashes.select { |h| h[:connect].include?(object.id) }.each do |associated_hash|
-          associated_object_name = get_id(associated_hash[:type])
-          object.send((create_property_name(associated_object_name) + '=').to_sym, associated_object_name.constantize.new(associated_hash))
-        end
-        owner_object_array << object
-      end
-
-      owner_object_array
-
-      # fourth loop
-      # owner_object_array.each do |object|
-      #   associated_hashes.select { |h| h[:connect].include?(object.id) }.each do |associated_hash|
-      #     associated_object_name = get_id(associated_hash[:type])
-      #     object.send((create_property_name(associated_object_name) + '=').to_sym, associated_object_name.constantize.new(associated_hash))
-      #   end
-      # end
-
+      object_with_array_maker(associated_hashes, owner_object_hashes)
     end
+
   end
 end
