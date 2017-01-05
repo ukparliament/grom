@@ -15,10 +15,6 @@ class DummyPerson < Grom::Base
     }
   end
 
-  def self.has_many_associations
-    ["dummy_parties", "dummy_party_memberships", "dummy_cats"]
-  end
-
   def sittings
     @sittings
   end
