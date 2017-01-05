@@ -35,7 +35,7 @@ module Grom
           subject = get_id(statement.subject)
           hash[subject] ||= {:id => subject}
           predicate = get_id(statement.predicate)
-          if (predicate == "connect")
+          if predicate == "connect"
             (hash[subject][predicate.to_sym] ||= []) << get_id(statement.object.to_s)
           else
             hash[subject][predicate.to_sym] = statement.object.to_s
@@ -56,9 +56,10 @@ module Grom
             predicate = get_id(statement.predicate)
             hash[subject][predicate.to_sym] = statement.object.to_s
           else
+            subject = statement.subject.to_s
             through_hashes[subject] ||= {:id => subject}
             predicate = get_id(statement.predicate)
-            if (predicate == "connect")
+            if predicate == "connect"
               (through_hashes[subject][predicate.to_sym] ||= []) << get_id(statement.object.to_s)
             else
               through_hashes[subject][predicate.to_sym] = statement.object.to_s
