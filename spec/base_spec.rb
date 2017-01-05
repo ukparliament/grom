@@ -10,7 +10,7 @@ describe Grom::Base do
   let(:middle_name_pattern) { RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/middleName"), :object) }
   let(:date_of_birth_pattern) { RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/dateOfBirth"), :object) }
   let(:gender_pattern) { RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/gender"), :object) }
-  let(:people_with) { DummyPerson.all_with('apple', ['dummy_party']) }
+  let(:people_with) { DummyPerson.eager_all('apple') }
 
   let(:person_with) { DummyPerson.find_with('9', [{'dummy_party' => 'dummy_party_membership' }]) }
 
@@ -50,7 +50,7 @@ describe Grom::Base do
     end
   end
 
-  describe '#all_with' do
+  describe '#eager_all' do
     it 'should return an array of two objects of type DummyPerson' do
       expect(people_with.count).to eq 2
     end
