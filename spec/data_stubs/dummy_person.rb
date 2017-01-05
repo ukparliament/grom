@@ -11,7 +11,10 @@ class DummyPerson < Grom::Base
         middleName: 'middle_name',
         dateOfBirth: 'date_of_birth',
         gender: 'gender',
-        type: 'type'
+        type: 'type',
+        dummy_parties: 'dummy_parties',
+        dummy_party_memberships: 'dummy_party_memberships',
+        dummy_cats: 'dummy_cats'
     }
   end
 
