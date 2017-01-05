@@ -108,12 +108,17 @@ module Grom
       endpoint_url = "#{all_base_url_builder(self.name, *options)}.ttl"
       ttl_data = get_ttl_data(endpoint_url)
       all_hashes = statements_with_mapper(ttl_data)
+
       with_properties.each do |property|
         self.property_getter_setter(property)
       end
       owner_object_hashes, associated_hashes = all_hashes.partition do |h|
         get_id(h[:type]) == self.name.to_s
       end
+
+      types_array = associated_hashes.map { |h| get_id(h[:type]) }.uniq
+      p types_array
+
       object_with_array_maker(associated_hashes, owner_object_hashes)
     end
 
