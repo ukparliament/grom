@@ -6,4 +6,8 @@ class DummyPartyMembership < Grom::Base
         partyMembershipEndDate: 'end_date'
     }
   end
+
+  def self.has_one
+    ["dummy_party"]
+  end
 end

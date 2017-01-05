@@ -11,11 +11,12 @@ class DummyPerson < Grom::Base
         middleName: 'middle_name',
         dateOfBirth: 'date_of_birth',
         gender: 'gender',
-        type: 'type',
-        dummy_parties: 'dummy_parties',
-        dummy_party_memberships: 'dummy_party_memberships',
-        dummy_cats: 'dummy_cats'
+        type: 'type'
     }
+  end
+
+  def self.has_many_associations
+    ["dummy_parties", "dummy_party_memberships", "dummy_cats"]
   end
 
   def sittings

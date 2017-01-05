@@ -16,6 +16,12 @@ module Grom
           self.class.send(:attr_reader, translated_key)
         end
       end
+      if self.class.methods.include?(:has_many_associations)
+        self.class.has_many_associations.each do |association|
+          instance_variable_set("@#{association}", [])
+          self.class.send(:attr_reader, association)
+        end
+      end
     end
 
     def self.find(id)
@@ -130,8 +136,8 @@ module Grom
         get_id(h[:type]) == self.name.to_s
       end
 
-      array_property_setter(associated_hashes, owner_object_hash)
-      array_property_setter(through_hashes.values, owner_object_hash)
+      # array_property_setter(associated_hashes, owner_object_hash)
+      # array_property_setter(through_hashes.values, owner_object_hash)
 
       owner_object = self.new(owner_object_hash.first)
 
@@ -154,11 +160,11 @@ module Grom
     end
 
 
-    def self.array_property_setter(hashes, owner_object_hash)
-      hashes.map { |h| create_plural_property_name(get_id(h[:type])) }.uniq.each do |property|
-        owner_object_hash.first[property.to_sym] = []
-      end
-    end
+    # def self.array_property_setter(hashes, owner_object_hash)
+    #   hashes.map { |h| create_plural_property_name(get_id(h[:type])) }.uniq.each do |property|
+    #     owner_object_hash.first[property.to_sym] = []
+    #   end
+    # end
 
   end
 end
