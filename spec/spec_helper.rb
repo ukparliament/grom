@@ -88,6 +88,10 @@ RSpec.configure do |config|
         with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Host'=>'example.com', 'User-Agent'=>'Ruby'}).
         to_return(:status => 200, :body => PEOPLE_AND_STUFF_TTL, :headers => {})
 
+    stub_request(:get, "http://example.com/dummy_people/9.ttl").
+        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Host'=>'example.com', 'User-Agent'=>'Ruby'}).
+        to_return(:status => 200, :body => PERSON_AND_STUFF_TTL, :headers => {})
+
     stub_request(:get, "http://example.com/dummy_squirrels.ttl").
         with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Host'=>'example.com', 'User-Agent'=>'Ruby'}).
         to_return(:status => 200, :body => SQUIRRELS_TTL, :headers => {})

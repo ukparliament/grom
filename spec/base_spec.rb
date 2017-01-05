@@ -10,7 +10,9 @@ describe Grom::Base do
   let(:middle_name_pattern) { RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/middleName"), :object) }
   let(:date_of_birth_pattern) { RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/dateOfBirth"), :object) }
   let(:gender_pattern) { RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/gender"), :object) }
-  let(:people_with) { DummyPerson.all_with('apple', ['dummy_party']) }
+  let(:people_with) { DummyPerson.eager_all('apple') }
+
+  let(:person_with) { DummyPerson.eager_find('9') }
 
   describe '#find' do
     it 'should return an instance of the class that it is called from - DummyPerson' do
@@ -48,7 +50,7 @@ describe Grom::Base do
     end
   end
 
-  describe '#all_with' do
+  describe '#eager_all' do
     it 'should return an array of two objects of type DummyPerson' do
       expect(people_with.count).to eq 2
     end
@@ -56,6 +58,22 @@ describe Grom::Base do
     it 'should create a property .party for each person and the name should be Liberal Democrat' do
       expect(people_with[0].dummy_party.name).to eq 'Liberal Democrat'
       expect(people_with[1].dummy_party.name).to eq 'Liberal Democrat'
+    end
+  end
+
+  describe '#eager_find' do
+    it 'should return a single person with her core properties' do
+      expect(person_with.forename).to eq 'Daenerys'
+    end
+
+    it 'should assign the correct sub-properties to the person' do
+      expect(person_with.dummy_parties.first.name).to eq 'Liberal Democrat'
+    end
+
+    it 'should return the party_memberships and each one should have one party and one cat' do
+      expect(person_with.dummy_party_memberships.first.end_date).to eq '1954-01-12'
+      expect(person_with.dummy_party_memberships.first.dummy_party.name).to eq 'Liberal Democrat'
+      expect(person_with.dummy_party_memberships.first.dummy_cat.name).to eq 'Felix'
     end
   end
 

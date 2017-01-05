@@ -104,17 +104,60 @@ module Grom
       end
     end
 
-    def self.all_with(*options, with_properties)
+    def self.eager_all(*options)
       endpoint_url = "#{all_base_url_builder(self.name, *options)}.ttl"
       ttl_data = get_ttl_data(endpoint_url)
-      all_hashes = statements_with_mapper(ttl_data)
-      with_properties.each do |property|
-        self.property_getter_setter(property)
-      end
+      all_hashes = eager_all_statements_mapper(ttl_data)
+
       owner_object_hashes, associated_hashes = all_hashes.partition do |h|
         get_id(h[:type]) == self.name.to_s
       end
+
+      types_array = associated_hashes.map { |h| create_property_name(get_id(h[:type])) }.uniq
+      types_array.each do |property|
+        self.property_getter_setter(property)
+      end
+
       object_with_array_maker(associated_hashes, owner_object_hashes)
+    end
+
+    def self.eager_find(id)
+      endpoint_url = "#{find_base_url_builder(self.name, id)}.ttl"
+      ttl_data = get_ttl_data(endpoint_url)
+      hash, through_hashes = eager_find_statements_mapper(ttl_data)
+      all_hashes = hash.values
+      owner_object_hash, associated_hashes = all_hashes.partition do |h|
+        get_id(h[:type]) == self.name.to_s
+      end
+
+      owner_object = self.new(owner_object_hash.first)
+
+      array_property_setter(associated_hashes, owner_object)
+      array_property_setter(through_hashes.values, owner_object)
+
+      associated_hashes.each do |hash|
+        associated_object_name = get_id(hash[:type])
+        owner_object.send(create_plural_property_name(associated_object_name.to_sym)) << associated_object_name.constantize.new(hash)
+      end
+
+      through_hashes.values.each do |hash|
+        through_object_name = get_id(hash[:type])
+        through_object = through_object_name.constantize.new(hash)
+        owner_object.send(create_plural_property_name(through_object_name.to_sym)) << through_object
+        associated_hashes.select { |h| hash[:connect].include?(h[:id]) }.each do |associated_hash|
+          through_object.class.property_getter_setter(create_property_name(get_id(associated_hash[:type])))
+          associated_object = get_id(associated_hash[:type]).constantize.new(associated_hash)
+          through_object.send((create_property_name(get_id(associated_hash[:type])) + '=').to_sym, associated_object)
+        end
+      end
+      owner_object
+    end
+
+    def self.array_property_setter(hashes, owner_object)
+      hashes.map { |h| create_plural_property_name(get_id(h[:type])) }.uniq.each do |property|
+        owner_object.class.property_getter_setter(property)
+        owner_object.send((property + "=").to_sym, [])
+      end
     end
 
   end
