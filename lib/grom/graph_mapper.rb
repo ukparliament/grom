@@ -28,7 +28,7 @@ module Grom
       hash[subject][get_id(statement.predicate).to_sym] = statement.object.to_s
     end
 
-    def eager_all_statements_mapper(ttl_data)
+    def eager_statements_mapper(ttl_data)
       hash = {}
       RDF::Turtle::Reader.new(ttl_data) do |reader|
         reader.each_statement do |statement|
@@ -45,30 +45,30 @@ module Grom
       hash.values
     end
 
-    def eager_find_statements_mapper(ttl_data)
-      hash = {}
-      through_hashes = {}
-      RDF::Turtle::Reader.new(ttl_data) do |reader|
-        reader.each_statement do |statement|
-          if (statement.subject.to_s =~ URI::regexp) == 0
-            subject = get_id(statement.subject)
-            hash[subject] ||= {:id => subject}
-            predicate = get_id(statement.predicate)
-            hash[subject][predicate.to_sym] = statement.object.to_s
-          else
-            subject = statement.subject.to_s
-            through_hashes[subject] ||= {:id => subject}
-            predicate = get_id(statement.predicate)
-            if predicate == "connect"
-              (through_hashes[subject][predicate.to_sym] ||= []) << get_id(statement.object.to_s)
-            else
-              through_hashes[subject][predicate.to_sym] = statement.object.to_s
-            end
-          end
-        end
-      end
-      return hash, through_hashes
-    end
+    # def eager_find_statements_mapper(ttl_data)
+    #   hash = {}
+    #   through_hashes = {}
+    #   RDF::Turtle::Reader.new(ttl_data) do |reader|
+    #     reader.each_statement do |statement|
+    #       if (statement.subject.to_s =~ URI::regexp) == 0
+    #         subject = get_id(statement.subject)
+    #         hash[subject] ||= {:id => subject}
+    #         predicate = get_id(statement.predicate)
+    #         hash[subject][predicate.to_sym] = statement.object.to_s
+    #       else
+    #         subject = statement.subject.to_s
+    #         through_hashes[subject] ||= {:id => subject}
+    #         predicate = get_id(statement.predicate)
+    #         if predicate == "connect"
+    #           (through_hashes[subject][predicate.to_sym] ||= []) << get_id(statement.object.to_s)
+    #         else
+    #           through_hashes[subject][predicate.to_sym] = statement.object.to_s
+    #         end
+    #       end
+    #     end
+    #   end
+    #   return hash, through_hashes
+    # end
 
     def through_split_graph(ttl_data)
       associated_hash, through_hash = {}, {}

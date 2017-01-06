@@ -107,7 +107,7 @@ module Grom
     def self.eager_all(*options)
       endpoint_url = "#{all_base_url_builder(self.name, *options)}.ttl"
       ttl_data = get_ttl_data(endpoint_url)
-      all_hashes = eager_all_statements_mapper(ttl_data)
+      all_hashes = eager_statements_mapper(ttl_data)
 
       owner_object_hashes, associated_hashes = all_hashes.partition do |h|
         get_id(h[:type]) == self.name.to_s
@@ -124,23 +124,26 @@ module Grom
     def self.eager_find(id)
       endpoint_url = "#{find_base_url_builder(self.name, id)}.ttl"
       ttl_data = get_ttl_data(endpoint_url)
-      hash, through_hashes = eager_find_statements_mapper(ttl_data)
-      all_hashes = hash.values
-      owner_object_hash, associated_hashes = all_hashes.partition do |h|
+      all_hashes = eager_statements_mapper(ttl_data)
+      owner_object_hash, associated_and_through_hashes = all_hashes.partition do |h|
         get_id(h[:type]) == self.name.to_s
+      end
+
+      through_hashes, associated_hashes = associated_and_through_hashes.partition do |h|
+        h[:relationship] == 'through'
       end
 
       owner_object = self.new(owner_object_hash.first)
 
       array_property_setter(associated_hashes, owner_object)
-      array_property_setter(through_hashes.values, owner_object)
+      array_property_setter(through_hashes, owner_object)
 
       associated_hashes.each do |hash|
         associated_object_name = get_id(hash[:type])
         owner_object.send(create_plural_property_name(associated_object_name.to_sym)) << associated_object_name.constantize.new(hash)
       end
 
-      through_hashes.values.each do |hash|
+      through_hashes.each do |hash|
         through_object_name = get_id(hash[:type])
         through_object = through_object_name.constantize.new(hash)
         owner_object.send(create_plural_property_name(through_object_name.to_sym)) << through_object
