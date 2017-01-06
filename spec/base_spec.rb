@@ -74,6 +74,7 @@ describe Grom::Base do
       expect(person_with.dummy_party_memberships.first.end_date).to eq '1954-01-12'
       expect(person_with.dummy_party_memberships.first.dummy_party.name).to eq 'Liberal Democrat'
       expect(person_with.dummy_party_memberships.first.dummy_cat.name).to eq 'Felix'
+      expect(person_with.dummy_party_memberships.last.dummy_cat.name).to eq 'Bob'
     end
   end
 
