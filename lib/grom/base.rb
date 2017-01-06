@@ -31,6 +31,10 @@ module Grom
       self.object_array_maker(ttl_data)
     end
 
+    def self.has_associations(*options)
+      options.each{ |option| self.property_getter_setter(option) }
+    end
+
     def self.has_many(association)
       self.class_eval("def #{association}(*options); #{create_class_name(association)}.has_many_query(self, *options); end")
     end
@@ -158,7 +162,6 @@ module Grom
 
     def self.array_property_setter(hashes, owner_object)
       hashes.map { |h| create_plural_property_name(get_id(h[:type])) }.uniq.each do |property|
-        owner_object.class.property_getter_setter(property)
         owner_object.send((property + "=").to_sym, [])
       end
     end
