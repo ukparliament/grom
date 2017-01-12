@@ -11,8 +11,8 @@ describe Grom::Base do
   let(:date_of_birth_pattern) { RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/dateOfBirth"), :object) }
   let(:gender_pattern) { RDF::Query::Pattern.new(:subject, RDF::URI.new("#{DATA_URI_PREFIX}/schema/gender"), :object) }
   let(:people_with) { DummyPerson.eager_all('apple') }
-
   let(:person_with) { DummyPerson.eager_find('9') }
+  let(:person_with_current_party) { DummyPerson.eager_find('9', 'parties', 'current') }
 
   describe '#find' do
     it 'should return an instance of the class that it is called from - DummyPerson' do
@@ -75,6 +75,14 @@ describe Grom::Base do
       expect(person_with.dummy_party_memberships.first.dummy_party.name).to eq 'Liberal Democrat'
       expect(person_with.dummy_party_memberships.first.dummy_cat.name).to eq 'Felix'
       expect(person_with.dummy_party_memberships.last.dummy_cat.name).to eq 'Bob'
+    end
+
+    it 'should be able to return a single person with a current party' do
+      expect(person_with_current_party.forename).to eq 'Daenerys'
+    end
+
+    it 'should assign the correct sub-properties to the person' do
+      expect(person_with_current_party.dummy_parties.first.name).to eq 'Liberal Democrat'
     end
   end
 
