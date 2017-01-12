@@ -18,11 +18,15 @@ module Grom
       endpoint
     end
 
-    def find_base_url_builder(class_name, id)
-      "#{API_ENDPOINT}/#{create_plural_property_name(class_name)}/#{id}"
+    def find_base_url_builder(class_name, id, *options)
+      endpoint = "#{API_ENDPOINT}/#{create_plural_property_name(class_name)}/#{id}"
+      options.each do |option|
+        endpoint += "/#{option}" unless option.nil?
+      end
+      endpoint
     end
 
-    def all_base_url_builder(class_name, *options)
+    def base_url_builder(class_name, *options)
       endpoint = "#{API_ENDPOINT}/#{create_plural_property_name(class_name)}"
         options.each do |option|
           endpoint += "/#{option}" unless option.nil?

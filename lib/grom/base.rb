@@ -25,7 +25,7 @@ module Grom
     end
 
     def self.all(*options)
-      endpoint_url = "#{all_base_url_builder(self.name, *options)}.ttl"
+      endpoint_url = "#{base_url_builder(self.name, *options)}.ttl"
       ttl_data = get_ttl_data(endpoint_url)
 
       self.object_array_maker(ttl_data)
@@ -109,7 +109,7 @@ module Grom
     end
 
     def self.eager_all(*options)
-      endpoint_url = "#{all_base_url_builder(self.name, *options)}.ttl"
+      endpoint_url = "#{base_url_builder(self.name, *options)}.ttl"
       ttl_data = get_ttl_data(endpoint_url)
       all_hashes = eager_statements_mapper(ttl_data)
 
@@ -125,8 +125,8 @@ module Grom
       object_with_array_maker(associated_hashes, owner_object_hashes)
     end
 
-    def self.eager_find(id)
-      endpoint_url = "#{find_base_url_builder(self.name, id)}.ttl"
+    def self.eager_find(id, *options)
+      endpoint_url = "#{base_url_builder(self.name, id, *options)}.ttl"
       ttl_data = get_ttl_data(endpoint_url)
       all_hashes = eager_statements_mapper(ttl_data)
       owner_object_hash, associated_and_through_hashes = all_hashes.partition do |h|

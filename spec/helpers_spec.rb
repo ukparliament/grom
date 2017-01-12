@@ -23,22 +23,22 @@ describe Grom::Helpers do
       expect(url).to eq "#{API_ENDPOINT}/dummy_people/1/party.ttl"
     end
   end
-
-  describe '#find_base_url_builder' do
-    it 'should return a url with the api_endpoint and the pluralized, underscored and downcased name of the class and an id when provided' do
-      url = extended_class.find_base_url_builder("ContactPerson", "1")
-      expect(url).to eq "#{API_ENDPOINT}/contact_people/1"
-    end
-  end
+  #
+  # describe '#find_base_url_builder' do
+  #   it 'should return a url with the api_endpoint and the pluralized, underscored and downcased name of the class and an id when provided' do
+  #     url = extended_class.find_base_url_builder("ContactPerson", "1")
+  #     expect(url).to eq "#{API_ENDPOINT}/contact_people/1"
+  #   end
+  # end
 
   describe '#all_base_url_builder' do
     it 'should return a url with the api_endpoint and the pluralized, underscored and downcased name of the class' do
-      url = extended_class.all_base_url_builder("ContactPerson")
+      url = extended_class.base_url_builder("ContactPerson")
       expect(url).to eq "#{API_ENDPOINT}/contact_people"
     end
 
     it 'should return a url with the api_endpoint and the pluralized, underscored and downcased name of the class and given optionals' do
-      url = extended_class.all_base_url_builder("ContactPerson", "members", "current")
+      url = extended_class.base_url_builder("ContactPerson", "members", "current")
       expect(url).to eq "#{API_ENDPOINT}/contact_people/members/current"
     end
   end
