@@ -14,7 +14,7 @@ module Grom
 
     def create_hash_from_ttl(ttl_data)
       hash = {}
-      RDF::Turtle::Reader.new(ttl_data) do |reader|
+      RDF::NTriples::Reader.new(ttl_data) do |reader|
         reader.each_statement do |statement|
           statement_mapper(statement, hash)
         end
