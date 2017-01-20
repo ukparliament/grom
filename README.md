@@ -1,4 +1,5 @@
 # Graph Object Mapper (Grom)
+ALL QUERIES MUST CONTAIN TYPES
 Grom is a custom ORM that takes graph data and deserializes it into objects. It uses the [RDF.rb](https://github.com/ruby-rdf/rdf) library. It was created in the context
 of UK Parliament's new website. 
 

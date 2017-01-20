@@ -9,11 +9,11 @@ module Grom
     end
 
     def method_missing(method, *params, &block)
-      self.instance_variable_get("@#{method}".to_sym) || super
+      instance_variable_get("@#{method}".to_sym) || super
     end
 
     def respond_to_missing?(method, include_private = false)
-      self.instance_variable_get("@#{method}".to_sym) || super
+      instance_variable_get("@#{method}".to_sym) || super
     end
 
     private

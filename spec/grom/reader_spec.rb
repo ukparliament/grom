@@ -2,6 +2,7 @@ require_relative '../spec_helper'
 
 describe Grom::Reader do
   let(:data) { StringIO.new(File.read('spec/fixtures/people_members_current.nt')) }
+  let(:empty_data) { StringIO.new(File.read('spec/fixtures/empty_data.nt')) }
 
   subject { Grom::Reader.new(data) }
 
@@ -36,10 +37,42 @@ describe Grom::Reader do
   end
 
   describe '#create_objects_by_subject' do
-    subject { Grom::Reader.new(data).create_hashes }
+    context 'data passed' do
+      subject { Grom::Reader.new(data).create_hashes }
 
-    it 'creates all of the objects for each subject' do
-      expect(subject.create_objects_by_subject.size).to eq(14)
+      it 'creates all of the objects for each subject' do
+        reader = subject.create_objects_by_subject
+        expect(reader.instance_variable_get(:@objects).size).to eq(14)
+      end
+    end
+
+    context 'empty data passed' do
+      it 'rescues the exception caused by @statements_by_subject being empty' do
+        reader = subject
+        reader.instance_variable_set(:@statements_by_subject, {})
+        expect { reader.create_objects_by_subject }.to raise_error(NoMethodError)
+      end
+    end
+  end
+
+  describe '#link_objects' do
+    subject { Grom::Reader.new(data).create_hashes.create_objects_by_subject }
+
+    context 'data passed' do
+      it 'links together related objects' do
+        reader  = subject.link_objects
+        objects = reader.instance_variable_get(:@objects)
+
+        expect(objects.first.sittings.first.houses.first.type).to eq('http://id.ukpds.org/schema/House')
+      end
+    end
+
+    context 'empty @objects_by_subject data' do
+      it 'rescues the exception caused by @objects_by_subject being empty' do
+        reader = subject
+        reader.instance_variable_set(:@objects_by_subject, {})
+        expect { reader.link_objects }.to raise_exception
+      end
     end
   end
 
