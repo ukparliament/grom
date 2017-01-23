@@ -12,10 +12,6 @@ describe Grom::Reader do
     end
   end
 
-  describe '#create_objects' do
-    pending
-  end
-
   describe '#create_hashes' do
     it 'populates @statements_by_subject' do
       reader = subject.create_hashes
@@ -33,46 +29,6 @@ describe Grom::Reader do
       reader = subject.create_hashes
 
       expect(reader.instance_variable_get(:@connections_by_subject).size).to eq(11)
-    end
-  end
-
-  describe '#create_objects_by_subject' do
-    context 'data passed' do
-      subject { Grom::Reader.new(data).create_hashes }
-
-      it 'creates all of the objects for each subject' do
-        reader = subject.create_objects_by_subject
-        expect(reader.instance_variable_get(:@objects).size).to eq(14)
-      end
-    end
-
-    context 'empty data passed' do
-      it 'rescues the exception caused by @statements_by_subject being empty' do
-        reader = subject
-        reader.instance_variable_set(:@statements_by_subject, {})
-        expect { reader.create_objects_by_subject }.to raise_error(NoMethodError)
-      end
-    end
-  end
-
-  describe '#link_objects' do
-    subject { Grom::Reader.new(data).create_hashes.create_objects_by_subject }
-
-    context 'data passed' do
-      it 'links together related objects' do
-        reader  = subject.link_objects
-        objects = reader.instance_variable_get(:@objects)
-
-        expect(objects.first.sittings.first.houses.first.type).to eq('http://id.ukpds.org/schema/House')
-      end
-    end
-
-    context 'empty @objects_by_subject data' do
-      it 'rescues the exception caused by @objects_by_subject being empty' do
-        reader = subject
-        reader.instance_variable_set(:@objects_by_subject, {})
-        expect { reader.link_objects }.to raise_exception
-      end
     end
   end
 
