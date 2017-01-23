@@ -1,15 +1,25 @@
 module Grom
-  class Writer
+  class Builder
+    attr_reader :objects
 
     def initialize(reader)
       @reader = reader
+
+      build_objects
+    end
+
+    def build_objects
+      build_objects_by_subject
+      link_objects
+
+      @objects
     end
 
     def initialize_objects_hashes
       @objects, @objects_by_subject = [], {}
     end
 
-    def create_objects_by_subject
+    def build_objects_by_subject
       initialize_objects_hashes
       @reader.subjects_by_type.each do |_type, subjects|
         subjects.each do |subject|
@@ -19,6 +29,7 @@ module Grom
             @objects << object
           rescue NoMethodError
             p 'No statements passed to Grom::Node.new'
+            super
           end
         end
       end
@@ -32,7 +43,7 @@ module Grom
         connections.each do |connection_subject|
           begin
             connection_node = @objects_by_subject[connection_subject]
-            current_node_type = Grom::Reader.get_id(current_node.type)
+            current_node_type = Grom::Helper.get_id(current_node.type)
             connector_name_symbol = Grom::Helper.pluralize_instance_variable_symbol(current_node_type)
 
             connected_object_array = connection_node.instance_variable_get(connector_name_symbol)
@@ -40,14 +51,15 @@ module Grom
             connected_object_array << current_node
 
             connection_node.instance_variable_set(connector_name_symbol, connected_object_array)
-          rescue Exceptions => e
-            p e.inspect
-            p 'Grom::Reader.get_id has returned nil'
+          rescue NoMethodError
+            p 'No type for current node'
+            super
           end
         end
       end
 
       self
     end
+
   end
 end

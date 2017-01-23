@@ -24,4 +24,26 @@ describe Grom::Helper do
       end
     end
   end
+
+  describe 'self#get_id' do
+    it 'strips a type correctly' do
+      expect(Grom::Helper.get_id(RDF.type)).to eq('type')
+    end
+
+    it 'strips a uri correctly' do
+      expect(Grom::Helper.get_id('http://google.com/12345-567-a910')).to eq('12345-567-a910')
+    end
+
+    it 'handles a nil value' do
+      expect(Grom::Helper.get_id(nil)).to eq(nil)
+    end
+
+    it 'handles an empty string' do
+      expect(Grom::Helper.get_id('')).to eq(nil)
+    end
+
+    it 'handles a non-string object' do
+      expect(Grom::Helper.get_id(%w(a b c))).to eq(nil)
+    end
+  end
 end

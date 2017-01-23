@@ -11,5 +11,11 @@ module Grom
       hash[key] ||= []
       hash[key] << value
     end
+
+    def self.get_id(uri)
+      return nil if uri.to_s['/'].nil?
+
+      uri == RDF.type.to_s ? 'type' : uri.to_s.split('/').last
+    end
   end
 end

@@ -2,13 +2,17 @@ require 'pry'
 
 module Grom
   class Reader
-    attr_reader :data
+    attr_reader :data, :statements_by_subject, :subjects_by_type, :connections_by_subject, :objects
 
     def initialize(data)
       @data = data
+
+      read_data
+
+      @objects = Grom::Builder.new(self).objects
     end
 
-    def create_hashes
+    def read_data
       # Reset all our hashes just in case
       @statements_by_subject  = {}
       @subjects_by_type       = {}
@@ -24,22 +28,16 @@ module Grom
           predicate = statement.predicate.to_s
 
           if predicate == RDF.type.to_s
-            Grom::Helper.lazy_array_insert(@subjects_by_type, Grom::Reader.get_id(statement.object), subject)
+            Grom::Helper.lazy_array_insert(@subjects_by_type, Grom::Helper.get_id(statement.object), subject)
           end
 
-          if (statement.object =~ URI::regexp) == 0 && predicate != RDF.type.to_s
+          if (statement.object =~ URI.regexp) == 0 && predicate != RDF.type.to_s
             Grom::Helper.lazy_array_insert(@connections_by_subject, subject, statement.object.to_s)
           end
         end
       end
 
       self
-    end
-
-    def self.get_id(uri)
-      return nil if uri.to_s['/'].nil?
-
-      uri == RDF.type.to_s ? 'type' : uri.to_s.split('/').last
     end
   end
 end

@@ -20,7 +20,7 @@ module Grom
 
     def populate
       @statements.each do |statement|
-        attribute_name = Grom::Reader.get_id(statement.predicate)
+        attribute_name = Grom::Helper.get_id(statement.predicate)
         attribute_value = statement.object.to_s
         instance_variable_set("@#{attribute_name}".to_sym, attribute_value)
       end
