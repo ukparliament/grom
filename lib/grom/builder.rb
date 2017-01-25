@@ -21,45 +21,35 @@ module Grom
 
     def build_objects_by_subject
       initialize_objects_hashes
-      @reader.subjects_by_type.each do |_type, subjects|
-        subjects.each do |subject|
-          begin
-            object = Grom::Node.new(@reader.statements_by_subject[subject])
-            @objects_by_subject[subject] = object
-            @objects << object
-          rescue NoMethodError
-            p 'No statements passed to Grom::Node.new'
-            super
-          end
-        end
+      @reader.statements_by_subject.each do |subject, statements|
+        object = Grom::Node.new(statements)
+        @objects_by_subject[subject] = object
+        @objects << object
       end
 
       self
     end
 
     def link_objects
-      @reader.connections_by_subject.each do |subject, connections|
-        current_node = @objects_by_subject[subject]
-        connections.each do |connection_subject|
-          begin
-            connection_node = @objects_by_subject[connection_subject]
-            current_node_type = Grom::Helper.get_id(current_node.type)
-            connector_name_symbol = Grom::Helper.pluralize_instance_variable_symbol(current_node_type)
+      @reader.edges_by_subject.each do |subject, predicates|
+        predicates.each do |predicate, object_uris|
+          current_node = @objects_by_subject[subject]
 
-            connected_object_array = connection_node.instance_variable_get(connector_name_symbol)
-            connected_object_array = [] if connected_object_array.nil?
-            connected_object_array << current_node
+          object_uris.each do |object_uri|
 
-            connection_node.instance_variable_set(connector_name_symbol, connected_object_array)
-          rescue NoMethodError
-            p 'No type for current node'
-            super
+            predicate_name_symbol = "@#{predicate}".to_sym
+            object_array = current_node.instance_variable_get(predicate_name_symbol)
+            object_array = [] if object_array.is_a?(String)
+            object_array << @objects_by_subject[object_uri]
+            
+            current_node.instance_variable_set(predicate_name_symbol, object_array)
+
+            # TODO: Not sure about the above conditional
           end
         end
       end
 
       self
     end
-
   end
 end

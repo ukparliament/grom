@@ -23,16 +23,10 @@ describe Grom::Reader do
       expect(reader.instance_variable_get(:@statements_by_subject).size).to eq(14)
     end
 
-    it 'populates @subjects_by_type' do
+    it 'populates @edges_by_subject' do
       reader = subject.read_data
 
-      expect(reader.instance_variable_get(:@subjects_by_type).size).to eq(6)
-    end
-
-    it 'populates @connections_by_subject' do
-      reader = subject.read_data
-
-      expect(reader.instance_variable_get(:@connections_by_subject).size).to eq(11)
+      expect(reader.instance_variable_get(:@edges_by_subject).size).to eq(14)
     end
   end
 end

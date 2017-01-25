@@ -21,30 +21,25 @@ describe Grom::Builder do
         expect(writer.instance_variable_get(:@objects).size).to eq(6)
       end
     end
-
-    context 'empty data passed' do
-      it 'rescues the exception caused by @statements_by_subject being empty' do
-        reader.instance_variable_set(:@subjects_by_type, subjects_by_type)
-        reader.instance_variable_set(:@statements_by_subject, {})
-        expect { subject.build_objects_by_subject }.to raise_error(NoMethodError)
-      end
-    end
   end
 
   describe '#link_objects' do
+    let(:data) { StringIO.new(File.read('spec/fixtures/people_members_current.nt')) }
+    let(:reader) { Grom::Reader.new(data) }
     subject { Grom::Builder.new(reader) }
 
-    before(:each) do
-      reader.instance_variable_set(:@statements_by_subject, statements_by_subject)
-      reader.instance_variable_set(:@subjects_by_type, subjects_by_type)
-      reader.instance_variable_set(:@connections_by_subject, connections_by_subject)
-    end
+    # before(:each) do
+    #   reader.instance_variable_set(:@statements_by_subject, statements_by_subject)
+    #   reader.instance_variable_set(:@subjects_by_type, subjects_by_type)
+    #   reader.instance_variable_set(:@connections_by_subject, connections_by_subject)
+    # end
 
     context 'data passed' do
       it 'links together related objects' do
         writer  = subject.build_objects_by_subject.link_objects
         objects = writer.instance_variable_get(:@objects)
-        expect(objects.first.sittings.first.houses.first.type).to eq('http://id.ukpds.org/schema/House')
+        # p objects.first
+        expect(objects.first.personHasSitting.first.sittingHasHouse.first.type).to eq('http://id.ukpds.org/schema/House')
       end
     end
 
