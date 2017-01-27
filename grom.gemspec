@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'rdf', '2.2.3'
-  spec.add_dependency 'activesupport', '5.0.1'
+  spec.add_dependency 'activesupport', '5.0.0.1'
 
   # the below are test dependencies
   spec.add_development_dependency 'bundler', '~> 1.13'
