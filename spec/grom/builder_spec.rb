@@ -28,17 +28,11 @@ describe Grom::Builder do
     let(:reader) { Grom::Reader.new(data) }
     subject { Grom::Builder.new(reader) }
 
-    # before(:each) do
-    #   reader.instance_variable_set(:@statements_by_subject, statements_by_subject)
-    #   reader.instance_variable_set(:@subjects_by_type, subjects_by_type)
-    #   reader.instance_variable_set(:@connections_by_subject, connections_by_subject)
-    # end
-
     context 'data passed' do
       it 'links together related objects' do
         writer  = subject.build_objects_by_subject.link_objects
         objects = writer.instance_variable_get(:@objects)
-        # p objects.first
+
         expect(objects.first.personHasSitting.first.sittingHasHouse.first.type).to eq('http://id.ukpds.org/schema/House')
       end
     end

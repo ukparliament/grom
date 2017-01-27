@@ -28,7 +28,7 @@ module Grom
 
           predicate = statement.predicate.to_s
 
-          if (statement.object =~ URI.regexp) == 0 && predicate != RDF.type.to_s
+          if statement.object.uri? && predicate != RDF.type.to_s
             predicate = Grom::Helper.get_id(predicate)
             @edges_by_subject[subject] ||= {}
             @edges_by_subject[subject][predicate] ||= []
