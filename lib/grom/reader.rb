@@ -1,5 +1,3 @@
-require 'pry'
-
 module Grom
   class Reader
     attr_reader :data, :statements_by_subject, :subjects_by_type, :edges_by_subject, :objects
