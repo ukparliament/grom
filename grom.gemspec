@@ -1,30 +1,35 @@
-$:.push File.expand_path("../lib", __FILE__)
-
-# Maintain your gem's version:
-require "grom"
+# coding: utf-8
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'grom/version'
 
 # Describe your gem and declare its dependencies:
-Gem::Specification.new do |s|
-  s.name        = "grom"
-  s.version     = Grom::VERSION
-  s.authors     = ["Rebecca Appleyard", "Giuseppe De Santis"]
-  s.email       = ["rklappleyard@gmail.com", "giusdesan@gmail.com"]
-  s.homepage    = ""
-  s.summary     = ""
-  s.description = "Grom is a Graph Object Mapper designed for UK Parliament"
-  s.license     = "MIT"
+Gem::Specification.new do |spec|
+  spec.name        = 'grom'
+  spec.version     = Grom::VERSION
+  spec.authors     = ['Rebecca Appleyard', 'Giuseppe De Santis', 'Matt Rayner']
+  spec.email       = ['rklappleyard@gmail.com', 'giusdesan@gmail.com', 'mattrayner1@gmail.com']
+  spec.homepage    = 'https://github.com/ukparliament/grom'
+  spec.summary     = 'Grom is a Graph Object Mapper'
+  spec.description = 'Grom is a Graph Object Mapper'
+  spec.license     = 'Open Parliament License'
 
-  s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
+  spec.files         = `git ls-files -z`.split("\x0").reject do |f|
+    f.match(%r{^(test|spec|features)/})
+  end
+  spec.bindir        = 'exe'
+  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
+  spec.require_paths = ['lib']
 
-  s.add_runtime_dependency "rails", "~> 5.0.0", ">= 5.0.0.1"
-  s.add_runtime_dependency "activesupport"
-  s.add_runtime_dependency "rdf-turtle"
+  spec.add_dependency 'rdf', '2.2.3'
+  spec.add_dependency 'activesupport', '>= 5.0.0.1'
 
   # the below are test dependencies
-  s.add_development_dependency "rspec-rails"
-  s.add_development_dependency "webmock"
-  s.add_development_dependency "simplecov"
-
-  # s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
-
+  spec.add_development_dependency 'bundler', '~> 1.13'
+  spec.add_development_dependency 'rake', '~> 10.0'
+  spec.add_development_dependency 'rspec', '~> 3.0'
+  spec.add_development_dependency 'rubocop', '~> 0.47'
+  spec.add_development_dependency 'pry', '~> 0.10'
+  spec.add_development_dependency 'pry-nav', '~> 0.2'
+  spec.add_development_dependency 'simplecov', '~> 0.13'
 end
