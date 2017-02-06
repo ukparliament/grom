@@ -1,6 +1,5 @@
 require_relative '../spec_helper'
 require_relative '../fixtures/reader_stubs'
-require 'pry'
 
 describe Grom::Builder do
 
