@@ -77,7 +77,7 @@ Logo design by [Anna Vámos][anna-vamos].
 
 [ruby]:         https://www.ruby-lang.org/en/
 [bundler]:      http://bundler.io
-[rspec]:        http://rspec.info
+[rspec]:        http://rspec.info 
 [grom-logo]:    https://cdn.rawgit.com/ukparliament/grom/85df4d355313358930cea8aa2fbfc53dd3e4f8d3/docs/logo.svg
 [grom]:         https://github.com/ukparliament/grom
 [pds]:          https://www.parliament.uk/mps-lords-and-offices/offices/bicameral/parliamentary-digital-service/
