@@ -21,7 +21,7 @@ module Grom
 
     def set_id
       id = Grom::Helper.get_id(@statements.first.subject)
-      instance_variable_set("@id".to_sym, id)
+      instance_variable_set('@id'.to_sym, id)
     end
 
     def populate
