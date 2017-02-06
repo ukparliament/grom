@@ -1,113 +1,95 @@
-# Graph Object Mapper (Grom)
-ALL QUERIES MUST CONTAIN TYPES
-Grom is a custom ORM that takes graph data and deserializes it into objects. It uses the [RDF.rb](https://github.com/ruby-rdf/rdf) library. It was created in the context
-of UK Parliament's new website. 
+# [![Graph Object Mapper (GROM)][grom-logo]][grom]
+[GROM][grom] is a gem created by the [Parliamentary Digital Service][pds] to take [ntriple][ntriple] files representing graph data and deserialise them into ruby objects.
+
+[![Build Status][shield-travis]][info-travis] [![Test Coverage][shield-coveralls]][info-coveralls] [![License][shield-license]][info-license]
+
+> **NOTE:** This gem is in active development and is likely to change at short notice. It is not recommended that you use this in any production environment.
+
+### Contents
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Getting Started with Development](#getting-started-with-development)
+  - [Running the tests](#running-the-tests)
+- [Contributing](#contributing)
+- [License](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+
+## Requirements
+[GROM][grom] requires the following:
+* [Ruby][ruby] - [click here][ruby-version] for the exact version
+* [Bundler][bundler]
+
 
 ## Installation
-```apple js
-gem install grom
-```
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'grom'
-```
-
-Then execute:
 ```bash
-$ bundle
+gem 'grom', '~> 0.3.4'
 ```
+
 
 ## Usage
+This gem's main function is taking an [ntriple][ntriple] data stream and deserialising it into linked `Grom::Node` objects.
 
-#### Set up
-You will need to set three constants in order for the gem to work. 
+```ruby
+file = File.read('people_members_current.nt')
+data_stream = StringIO.new(file)
 
-```
-API_ENDPOINT = 'http://example.com'
-API_ENDPOINT_HOST = 'example.com'
-DATA_URI_PREFIX = 'http://id.example.com'
-```
-
-The API Endpoint will be the endpoint where you are making the calls to get graph data. <br>
-The Data URI prefix is the prefix that you use to define the entities in your triple store.
-
-
-#### Models
-Models inherit from `Grom::Base` and need a `self.property_translator` hash defined.   The keys are predicates (without the prefix) and the values are the translated object properties.
-
-An example of a Person class.
-
-```
-class Person < Grom::Base
-
-  def self.property_translator
-    {
-        id: 'id',
-        forename: 'forename',
-        surname: 'surname',
-        middleName: 'middle_name',
-        dateOfBirth: 'date_of_birth'
-    }
-  end
-end
+objects = Grom::Reader.new(data_stream) #=> [<#Grom::Node ...>, <#Grom::Node ...>, ...]
 ```
 
-#### Retrieving Objects
 
-##### #all
-To return a collection of objects use the class method `all`.
-```apple js
-people = Person.all #=> returns an array of People objects
+## Getting Started with Development
+To clone the repository and set up the dependencies, run the following:
+```bash
+git clone https://github.com/ukparliament/grom.git
+cd grom
+bundle install
 ```
 
-This method can take unlimited parameters.  Including a parameter appends it to the endpoint url creating a new url.  For example,
-
-```apple js
-people = Person.all('current') #=> returns an array of current People
-```
-This generates the endpoint url `http://#{API_ENDPOINT}/people/current.ttl` and returns a list of current people from there.
-
-##### #find
-To return a single object use the class method `find` with an id.
-```apple js
-person = Person.find('1') #=> returns a Person object
+### Running the tests
+We use [RSpec][rspec] as our testing framework and tests can be run using:
+```bash
+bundle exec rake
 ```
 
-#### Associations
 
-##### #has_many
-For a simple `has_many` association, declare the association at the top of the model. For example, if `Person` has many `contact_points`, create a `ContactPoint` class and declare the association at the top of the `Person` class.
+## Contributing
+If you wish to submit a bug fix or feature, you can create a pull request and it will be merged pending a code review.
 
-The name of the association must match the name of the class but it needs to be underscored and pluralized just like in ActiveRecord.
-
-```
-class Person < Grom::Base
-  has_many :contact_points
-```
-
-It is then possible to retrieve the contact_points for a person in the following way:
-
-```apple js
-person = Person.find('1')
-person.contact_points #=> returns an array of contact_points related to person
-```
-
-##### #has_many_through
-For a `has_many_through` association, declare the association at the top of the model. For example, if `Person` has many `parties` through `party_memberships`, create a `Party` class and a `PartyMembership` class, then declare the association at the top of the `Person` class.
-
-```
-class Person < Grom::Base
-  has_many_through :parties, via: :party_memberships
-```
-
-It is then possible to retrieve the parties for a person in the following way:
-
-```apple js
-person = Person.find('1')
-person.parties #=> returns an array of parties with the party_memberships stored as a hash
-```
+1. Fork the repository
+1. Create your feature branch (`git checkout -b my-new-feature`)
+1. Commit your changes (`git commit -am 'Add some feature'`)
+1. Push to the branch (`git push origin my-new-feature`)
+1. Ensure your changes are tested using [Rspec][rspec]
+1. Create a new Pull Request
 
 
 ## License
-The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+[grom][grom] is licensed under the [Open Parliament Licence][info-license].
+
+Logo design by [Anna Vámos][anna-vamos].
+
+[ruby]:         https://www.ruby-lang.org/en/
+[bundler]:      http://bundler.io
+[rspec]:        http://rspec.info
+[grom-logo]:    https://cdn.rawgit.com/ukparliament/grom/85df4d355313358930cea8aa2fbfc53dd3e4f8d3/docs/logo.svg
+[grom]:         https://github.com/ukparliament/grom
+[pds]:          https://www.parliament.uk/mps-lords-and-offices/offices/bicameral/parliamentary-digital-service/
+[ruby-version]: https://github.com/ukparliament/grom/blob/master/.ruby-version
+[anna-vamos]:   https://www.linkedin.com/in/annavamos
+[ntriple]:      https://en.wikipedia.org/wiki/N-Triples
+
+[info-travis]:   https://travis-ci.org/ukparliament/grom
+[shield-travis]: https://img.shields.io/travis/ukparliament/grom.svg
+
+[info-coveralls]:   https://coveralls.io/github/ukparliament/grom
+[shield-coveralls]: https://img.shields.io/coveralls/ukparliament/grom.svg
+
+[info-license]:   http://www.parliament.uk/site-information/copyright/open-parliament-licence/
+[shield-license]: https://img.shields.io/badge/license-Open%20Parliament%20Licence-blue.svg
