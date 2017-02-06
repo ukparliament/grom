@@ -22,14 +22,12 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'rdf', '2.2.3'
-  spec.add_dependency 'activesupport', '5.0.0.1'
+  spec.add_dependency 'activesupport', '>= 5.0.0.1'
 
   # the below are test dependencies
   spec.add_development_dependency 'bundler', '~> 1.13'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_development_dependency 'rubocop', '~> 0.47'
-  spec.add_development_dependency 'pry', '~> 0.10'
-  spec.add_development_dependency 'pry-nav', '~> 0.2'
   spec.add_development_dependency 'simplecov', '~> 0.13'
 end
