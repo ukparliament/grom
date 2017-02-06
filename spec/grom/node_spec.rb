@@ -14,8 +14,8 @@ describe Grom::Node do
       subject { Grom::Node.new(statements) }
 
       context 'instance variables' do
-        it 'sets @id' do
-          expect(subject.instance_variable_get(:@id)).to eq('123')
+        it 'sets @graph_id' do
+          expect(subject.instance_variable_get(:@graph_id)).to eq('123')
         end
 
         it 'sets @type' do
@@ -32,9 +32,9 @@ describe Grom::Node do
       end
 
       context 'methods' do
-        it 'responds to #id' do
-          expect{ subject.method(:id) }.not_to raise_error
-          expect(subject.id).to eq('123')
+        it 'responds to #graph_id' do
+          expect{ subject.method(:graph_id) }.not_to raise_error
+          expect(subject.graph_id).to eq('123')
         end
 
         it 'responds to #type' do

@@ -5,7 +5,6 @@ module Grom
     def initialize(statements)
       @statements = statements
 
-      set_id
       populate
     end
 
@@ -19,12 +18,13 @@ module Grom
 
     private
 
-    def set_id
-      id = Grom::Helper.get_id(@statements.first.subject)
-      instance_variable_set('@id'.to_sym, id)
+    def set_graph_id
+      graph_id = Grom::Helper.get_id(@statements.first.subject)
+      instance_variable_set('@graph_id'.to_sym, graph_id)
     end
 
     def populate
+      set_graph_id
       @statements.each do |statement|
         attribute_name = Grom::Helper.get_id(statement.predicate)
         attribute_value = statement.object.to_s
