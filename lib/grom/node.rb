@@ -5,6 +5,7 @@ module Grom
     def initialize(statements)
       @statements = statements
 
+      set_id
       populate
     end
 
@@ -17,6 +18,11 @@ module Grom
     end
 
     private
+
+    def set_id
+      id = Grom::Helper.get_id(@statements.first.subject)
+      instance_variable_set('@id'.to_sym, id)
+    end
 
     def populate
       @statements.each do |statement|
