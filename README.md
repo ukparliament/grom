@@ -40,7 +40,7 @@ This gem's main function is taking an [ntriple][ntriple] data stream and deseria
 file = File.read('people_members_current.nt')
 data_stream = StringIO.new(file)
 
-objects = Grom::Reader.new(data_stream) #=> [<#Grom::Node ...>, <#Grom::Node ...>, ...]
+objects = Grom::Reader.new(data_stream).objects #=> [<#Grom::Node ...>, <#Grom::Node ...>, ...]
 ```
 
 
