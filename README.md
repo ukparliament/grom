@@ -29,7 +29,7 @@
 
 ## Installation
 ```bash
-gem 'grom', '~> 0.3.4'
+gem 'grom'
 ```
 
 
