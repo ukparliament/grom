@@ -6,3 +6,6 @@ pkg/
 .DS_Store
 Gemfile.lock
 /coverage
+*.gem
+doc
+.yardoc/
