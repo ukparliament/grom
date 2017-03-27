@@ -4,6 +4,8 @@ module Grom
   # @since 0.1.0
   # @attr_reader [Array] statements an array of n-triple statements.
   class Node
+    BLANK = 'blank_node'.freeze
+
     attr_reader :statements
 
     # @param [Array] statements an array of n-triple statements.
@@ -60,6 +62,13 @@ module Grom
     #   node.respond_to?(:foo) #=> false
     def respond_to_missing?(method, include_all = false)
       instance_variable_get("@#{method}".to_sym) || super
+    end
+
+    # Checks if Grom::Node is a blank node
+    #
+    # @return [Boolean] a boolean depending on whether or not the Grom::Node is a blank node
+    def blank?
+      @statements.first.subject.anonymous?
     end
 
     private

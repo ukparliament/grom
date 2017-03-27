@@ -7,7 +7,9 @@ describe Grom::Node do
         RDF::Statement.new(RDF::URI.new('http://example.com/123'), RDF::URI.new('http://example.com/forename'), 'Jane'),
         RDF::Statement.new(RDF::URI.new('http://example.com/123'), RDF::URI.new('http://example.com/surname'), 'Smith')
     ]
-  end
+    end
+
+    let(:blank_node_statement) { [RDF::Statement.new(RDF::Node.new, RDF::URI.new('http://example.com/value'), 'A')] }
 
   subject { Grom::Node.new(statements) }
 
@@ -85,6 +87,18 @@ describe Grom::Node do
 
     it 'does not respond to #something_random' do
       expect(subject.respond_to?(:something_random)).to be(false)
+    end
+  end
+
+  describe '#blank?' do
+    it 'returns true for a Grom::Node populated with blank nodes' do
+      node = Grom::Node.new(blank_node_statement)
+
+      expect(node.blank?).to be(true)
+    end
+
+    it 'returns false for a Grom::Node which is not a blank node' do
+      expect(subject.blank?).to be(false)
     end
   end
 end
