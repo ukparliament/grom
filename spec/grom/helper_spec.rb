@@ -30,6 +30,10 @@ describe Grom::Helper do
       expect(Grom::Helper.get_id(RDF.type)).to eq('type')
     end
 
+    it 'strips a label correctly' do
+      expect(Grom::Helper.get_id(RDF::RDFS.label)).to eq('label')
+    end
+
     it 'strips a uri correctly' do
       expect(Grom::Helper.get_id('http://google.com/12345-567-a910')).to eq('12345-567-a910')
     end

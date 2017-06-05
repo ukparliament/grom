@@ -40,7 +40,14 @@ module Grom
     def self.get_id(uri)
       return nil if uri.to_s['/'].nil?
 
-      uri == RDF.type.to_s ? 'type' : uri.to_s.split('/').last
+      if uri == RDF::RDFS.label.to_s
+        return 'label'
+      elsif uri == RDF.type.to_s
+        return 'type'
+      else
+        uri.to_s.split('/').last
+      end
+
     end
   end
 end
