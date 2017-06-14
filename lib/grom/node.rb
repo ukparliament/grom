@@ -81,9 +81,18 @@ module Grom
     def populate
       set_graph_id
       @statements.each do |statement|
-        attribute_name = Grom::Helper.get_id(statement.predicate)
-        attribute_value = statement.object.to_s
-        instance_variable_set("@#{attribute_name}".to_sym, attribute_value)
+        predicate = Grom::Helper.get_id(statement.predicate).to_sym
+        object = statement.object.to_s
+
+        instance_variable = instance_variable_get("@#{predicate}")
+
+        if instance_variable
+          instance_variable = instance_variable.is_a?(Array) ? instance_variable.flatten : [instance_variable]
+          instance_variable << object
+          instance_variable_set("@#{predicate}", instance_variable)
+        else
+          instance_variable_set("@#{predicate}", object)
+        end
       end
     end
   end

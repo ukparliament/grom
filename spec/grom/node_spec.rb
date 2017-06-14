@@ -41,6 +41,34 @@ describe Grom::Node do
     end
   end
 
+  describe '#populate' do
+    context 'single attribute' do
+      it 'will populate attributes' do
+        expect(subject.instance_variable_get(:@forename)).to be_a(String)
+        expect(subject.instance_variable_get(:@forename)).to eq('Jane')
+      end
+    end
+
+    context 'multiple attributes' do
+      let(:multi_attribute_statements) do
+        [
+            RDF::Statement.new(RDF::URI.new('http://example.com/123'), RDF.type, 'Person'),
+            RDF::Statement.new(RDF::URI.new('http://example.com/123'), RDF::URI.new('http://example.com/forename'), 'Jane'),
+            RDF::Statement.new(RDF::URI.new('http://example.com/123'), RDF::URI.new('http://example.com/surname'), 'Smith'),
+            RDF::Statement.new(RDF::URI.new('http://example.com/123'), RDF.type, 'Person'),
+            RDF::Statement.new(RDF::URI.new('http://example.com/123'), RDF::URI.new('http://example.com/forename'), 'David'),
+            RDF::Statement.new(RDF::URI.new('http://example.com/123'), RDF::URI.new('http://example.com/surname'), 'Davidson')
+        ]
+      end
+      subject {Grom::Node.new(multi_attribute_statements)}
+
+      it 'will populate arrays with both attributes' do
+        expect(subject.instance_variable_get(:@forename)).to be_a(Array)
+        expect(subject.instance_variable_get(:@forename)).to eq(['Jane', 'David'])
+      end
+    end
+  end
+
   describe '#method_missing' do
     it 'responds to #graph_id' do
       expect{ subject.method(:graph_id) }.not_to raise_error
