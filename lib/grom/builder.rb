@@ -50,7 +50,7 @@ module Grom
           object_uris.each do |object_uri|
             predicate_name_symbol = "@#{predicate}".to_sym
             object_array = current_node.instance_variable_get(predicate_name_symbol)
-            object_array = [] if object_array.is_a?(String)
+            object_array = [] if object_array.is_a?(String) || object_array.all? { |object| object.is_a?(String) }
             object_array << @objects_by_subject[object_uri]
 
             current_node.instance_variable_set(predicate_name_symbol, object_array)

@@ -45,7 +45,9 @@ describe Grom::Builder do
         writer  = subject.build_objects_by_subject.link_objects
         objects = writer.instance_variable_get(:@objects)
 
-        expect(objects.first.personHasSitting.first.sittingHasHouse.first.type).to eq('http://id.ukpds.org/schema/House')
+        objects.first.personHasSitting.first.sittingHasHouse.first.houseHasSitting.each do |sitting|
+          expect(sitting.type).to eq('http://id.ukpds.org/schema/Sitting')
+        end
       end
     end
 
@@ -53,6 +55,7 @@ describe Grom::Builder do
       it 'rescues the exception caused by @objects_by_subject being empty' do
         writer = subject.build_objects_by_subject
         writer.instance_variable_set(:@objects_by_subject, {})
+
         expect { writer.link_objects }.to raise_error(NoMethodError)
       end
     end
