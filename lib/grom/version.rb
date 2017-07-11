@@ -1,3 +1,3 @@
 module Grom
-  VERSION = '0.3.9'.freeze
+  VERSION = '0.3.10.pre'.freeze
 end
