@@ -42,6 +42,8 @@ module Grom
 
       if uri == RDF::RDFS.label.to_s
         return 'label'
+      elsif uri == RDF::Vocab::SKOS.prefLabel.to_s
+        return 'prefLabel'
       elsif uri == RDF.type.to_s
         return 'type'
       else

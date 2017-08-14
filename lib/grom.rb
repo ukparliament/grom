@@ -1,4 +1,5 @@
 require 'rdf'
+require 'rdf/vocab'
 require 'active_support/inflector'
 
 require_relative 'grom/version'
