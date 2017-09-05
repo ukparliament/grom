@@ -1,0 +1,30 @@
+pipelines:
+  GEM-grom:
+    group: Dependencies
+    label_template: "${COUNT}"
+    materials:
+      GEM-grom-git:
+        git: https://github.com/ukparliament/grom.git
+        branch: master
+        auto_update: true
+    stages:
+      - deploy:
+          approval: manual
+          jobs:
+            deploy:
+              tasks:
+                - exec:
+                    run_if: passed
+                    command: make
+                    arguments:
+                      - checkout_to_release
+                - exec:
+                    run_if: passed
+                    command: make
+                    arguments:
+                      - deploy_to_release
+
+environments:
+  Web.LIVE:
+    pipelines:
+      - GEM-grom
