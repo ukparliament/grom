@@ -49,11 +49,25 @@ module Grom
 
           object_uris.each do |object_uri|
             predicate_name_symbol = "@#{predicate}".to_sym
-            object_array = current_node.instance_variable_get(predicate_name_symbol)
-            object_array = [] if object_array.is_a?(String) || object_array.all? { |object| object.is_a?(String) }
-            object_array << @objects_by_subject[object_uri]
 
-            current_node.instance_variable_set(predicate_name_symbol, object_array)
+            # Get the current value (if there is one)
+            current_value = current_node.instance_variable_get(predicate_name_symbol)
+
+            object = current_value
+
+            # If we have stored a string, and there are objects to link, create an empty array
+            object = [] if current_value.is_a?(String) && @objects_by_subject[object_uri]
+
+            # If the above is correct, and we have an array
+            if object.is_a?(Array)
+              # Insert the current value (only if this is a new array (prevents possible duplication), the current value is a string, and there are no linked objects to insert)
+              object << current_value if object.empty? && current_value.is_a?(String) && @objects_by_subject[object_uri].nil?
+
+              # Insert linked objects, if there are any
+              object << @objects_by_subject[object_uri] if @objects_by_subject[object_uri]
+            end
+
+            current_node.instance_variable_set(predicate_name_symbol, object)
           end
         end
       end
