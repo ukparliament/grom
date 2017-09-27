@@ -67,6 +67,24 @@ describe Grom::Node do
         expect(subject.instance_variable_get(:@forename)).to eq(['Jane', 'David'])
       end
     end
+
+    context 'uri object' do
+      let(:uri_object_statements) do
+        [
+            RDF::Statement.new(RDF::URI.new('http://example.com/123'), RDF.type, 'Person'),
+            RDF::Statement.new(RDF::URI.new('http://example.com/123'), RDF::URI.new('http://example.com/forename'), 'Jane'),
+            RDF::Statement.new(RDF::URI.new('http://example.com/123'), RDF::URI.new('http://example.com/surname'), 'Smith'),
+            RDF::Statement.new(RDF::URI.new('http://example.com/123'), RDF::URI.new('http://example.com/website'), RDF::URI.new('http://example.com/'))
+        ]
+      end
+
+      subject {Grom::Node.new(uri_object_statements)}
+
+      it 'will populate URIs as strings' do
+        expect(subject.instance_variable_get(:@website)).to be_a(String)
+        expect(subject.instance_variable_get(:@website)).to eq('http://example.com/')
+      end
+    end
   end
 
   describe '#method_missing' do

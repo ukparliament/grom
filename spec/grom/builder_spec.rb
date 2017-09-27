@@ -52,11 +52,11 @@ describe Grom::Builder do
     end
 
     context 'empty @objects_by_subject data' do
-      it 'rescues the exception caused by @objects_by_subject being empty' do
+      it 'will not call method if @objects_by_subject is nil' do
         writer = subject.build_objects_by_subject
         writer.instance_variable_set(:@objects_by_subject, {})
 
-        expect { writer.link_objects }.to raise_error(NoMethodError)
+        expect(writer.link_objects).not_to receive(:instance_variable_set)
       end
     end
   end
