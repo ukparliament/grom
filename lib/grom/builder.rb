@@ -46,6 +46,7 @@ module Grom
       @reader.edges_by_subject.each do |subject, predicates|
         predicates.each do |predicate, object_uris|
           current_node = @objects_by_subject[subject]
+          next if current_node.nil?
 
           object_uris.each do |object_uri|
             predicate_name_symbol = "@#{predicate}".to_sym
@@ -56,15 +57,20 @@ module Grom
             object = current_value
 
             # If we have stored a string, and there are objects to link, create an empty array
-            object = [] if current_value.is_a?(String) && @objects_by_subject[object_uri]
+            current_value_is_string    = current_value.is_a?(String)
+            object_is_array_of_strings = object.all? { |entry| entry.is_a?(String) } if object.is_a?(Array)
+            object_by_uri              = @objects_by_subject[object_uri]
+
+            object = [] if (current_value_is_string || object_is_array_of_strings) && object_by_uri
 
             # If the above is correct, and we have an array
             if object.is_a?(Array)
-              # Insert the current value (only if this is a new array (prevents possible duplication), the current value is a string, and there are no linked objects to insert)
-              object << current_value if object.empty? && current_value.is_a?(String) && @objects_by_subject[object_uri].nil?
+              # Insert the current value (only if this is a new array (prevents possible duplication),
+              # the current value is a string, and there are no linked objects to insert)
+              object << current_value if object.empty? && current_value_is_string && object_by_uri.nil?
 
               # Insert linked objects, if there are any
-              object << @objects_by_subject[object_uri] if @objects_by_subject[object_uri]
+              object << object_by_uri if object_by_uri
             end
 
             current_node.instance_variable_set(predicate_name_symbol, object)
