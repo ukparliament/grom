@@ -91,5 +91,5 @@ Logo design by [Anna Vámos][anna-vamos].
 [info-coveralls]:   https://coveralls.io/github/ukparliament/grom
 [shield-coveralls]: https://img.shields.io/coveralls/ukparliament/grom.svg
 
-[info-license]:   http://www.parliament.uk/site-information/copyright/open-parliament-licence/
+[info-license]:   https://www.parliament.uk/site-information/copyright-parliament/open-parliament-licence/
 [shield-license]: https://img.shields.io/badge/license-Open%20Parliament%20Licence-blue.svg
