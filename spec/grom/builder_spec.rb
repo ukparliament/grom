@@ -59,5 +59,16 @@ describe Grom::Builder do
         expect(writer.link_objects).not_to receive(:instance_variable_set)
       end
     end
+
+    context 'incorrect predicate name used' do
+      let(:error_data) { StringIO.new(File.read('spec/fixtures/naming_error.nt')) }
+      let(:error_reader) { Grom::Reader.new(error_data) }
+      subject { Grom::Builder.new(error_reader) }
+
+      it 'raises a Parliament::NamingError' do
+        expect { subject.build_objects_by_subject.link_objects }.to raise_error(Grom::NamingError)
+      end
+    end
+
   end
 end

@@ -45,6 +45,8 @@ module Grom
     def link_objects
       @reader.edges_by_subject.each do |subject, predicates|
         predicates.each do |predicate, object_uris|
+          raise NamingError if predicate == 'type'
+
           current_node = @objects_by_subject[subject]
           next if current_node.nil?
 
