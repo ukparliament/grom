@@ -34,7 +34,10 @@ module Grom
 
           predicate = statement.predicate.to_s
 
-          if statement.object.uri? && predicate != RDF.type.to_s
+          object_is_possible_link = statement.object.uri? || statement.object.is_a?(RDF::Node)
+          predicate_is_not_a_type_definition = predicate != RDF.type.to_s
+
+          if object_is_possible_link && predicate_is_not_a_type_definition
             predicate = Grom::Helper.get_id(predicate)
             @edges_by_subject[subject] ||= {}
             @edges_by_subject[subject][predicate] ||= []

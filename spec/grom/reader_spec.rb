@@ -5,6 +5,7 @@ describe Grom::Reader do
   let(:single_data) { StringIO.new(File.read('spec/fixtures/single_person_current.nt')) }
   let(:single_data_multiple_sites) { StringIO.new(File.read('spec/fixtures/single_person_current_multiple_sites.nt')) }
   let(:empty_data) { StringIO.new(File.read('spec/fixtures/empty_data.nt')) }
+  let(:blank_node_links_data) { StringIO.new(File.read('spec/fixtures/blank_node_links.nt')) }
 
   subject { Grom::Reader.new(data) }
 
@@ -36,17 +37,37 @@ describe Grom::Reader do
     end
   end
 
-  describe '#create_hashes' do
-    it 'populates @statements_by_subject' do
-      reader = subject.read_data
+  describe '#read_data' do
+    context 'when linked not using blank nodes' do
+      it 'populates @statements_by_subject' do
+        reader = subject.read_data
 
-      expect(reader.instance_variable_get(:@statements_by_subject).size).to eq(14)
+        expect(reader.instance_variable_get(:@statements_by_subject).size).to eq(14)
+      end
+
+      it 'populates @edges_by_subject' do
+        reader = subject.read_data
+
+        expect(reader.instance_variable_get(:@edges_by_subject).size).to eq(14)
+      end
     end
 
-    it 'populates @edges_by_subject' do
-      reader = subject.read_data
 
-      expect(reader.instance_variable_get(:@edges_by_subject).size).to eq(14)
+    context 'when linked using blank nodes' do
+      subject { Grom::Reader.new(blank_node_links_data) }
+
+      it 'populates @statements_by_subject' do
+        reader = subject.read_data
+
+        expect(reader.instance_variable_get(:@statements_by_subject).size).to eq(14)
+      end
+
+      it 'populates @edges_by_subject' do
+        reader = subject.read_data
+
+        expect(reader.instance_variable_get(:@edges_by_subject).size).to eq(3)
+      end
+
     end
   end
 end
