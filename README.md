@@ -43,6 +43,7 @@ data_stream = StringIO.new(file)
 objects = Grom::Reader.new(data_stream).objects #=> [<#Grom::Node ...>, <#Grom::Node ...>, ...]
 ```
 
+Note that [ntriple][ntriple] data streams cannot contain a predicate named 'type', as this word is reserved for RDF types.
 
 ## Getting Started with Development
 To clone the repository and set up the dependencies, run the following:
@@ -77,7 +78,7 @@ Logo design by [Anna Vámos][anna-vamos].
 
 [ruby]:         https://www.ruby-lang.org/en/
 [bundler]:      http://bundler.io
-[rspec]:        http://rspec.info 
+[rspec]:        http://rspec.info
 [grom-logo]:    https://cdn.rawgit.com/ukparliament/grom/85df4d355313358930cea8aa2fbfc53dd3e4f8d3/docs/logo.svg
 [grom]:         https://github.com/ukparliament/grom
 [pds]:          https://www.parliament.uk/mps-lords-and-offices/offices/bicameral/parliamentary-digital-service/
