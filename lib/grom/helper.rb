@@ -47,9 +47,10 @@ module Grom
       elsif uri == RDF.type.to_s
         return 'type'
       else
-        uri.to_s.split('/').last
-      end
+        uri_object = URI(uri)
 
+        return uri_object.fragment ? uri_object.fragment : uri_object.path.split('/').last
+      end
     end
   end
 end

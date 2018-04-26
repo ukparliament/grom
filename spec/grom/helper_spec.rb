@@ -42,6 +42,10 @@ describe Grom::Helper do
       expect(Grom::Helper.get_id('http://google.com/12345-567-a910')).to eq('12345-567-a910')
     end
 
+    it 'strips a fragment correctly' do
+      expect(Grom::Helper.get_id('http://example.com/some-id#type')).to eq('type')
+    end
+
     it 'handles a nil value' do
       expect(Grom::Helper.get_id(nil)).to eq(nil)
     end
