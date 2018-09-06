@@ -3,13 +3,13 @@ require_relative '../spec_helper'
 describe Grom::Node do
   let(:statements) do
     [
-        RDF::Statement.new(RDF::URI.new('http://example.com/123'), RDF.type, 'Person'),
+        RDF::Statement.new(RDF::URI.new('http://example.com/123'), RDF.type, 'http://example.com/schema/Person'),
         RDF::Statement.new(RDF::URI.new('http://example.com/123'), RDF::URI.new('http://example.com/forename'), 'Jane'),
         RDF::Statement.new(RDF::URI.new('http://example.com/123'), RDF::URI.new('http://example.com/surname'), 'Smith')
     ]
-    end
+  end
 
-    let(:blank_node_statement) { [RDF::Statement.new(RDF::Node.new, RDF::URI.new('http://example.com/value'), 'A')] }
+  let(:blank_node_statement) { [RDF::Statement.new(RDF::Node.new, RDF::URI.new('http://example.com/value'), 'A')] }
 
   subject { Grom::Node.new(statements) }
 
@@ -21,7 +21,7 @@ describe Grom::Node do
         end
 
         it 'sets @type' do
-          expect(subject.instance_variable_get(:@type)).to eq('Person')
+          expect(subject.instance_variable_get(:@type)).to eq('http://example.com/schema/Person')
         end
 
         it 'sets @forename' do
@@ -32,11 +32,18 @@ describe Grom::Node do
           expect(subject.instance_variable_get(:@surname)).to eq('Smith')
         end
       end
+
+      context 'with decorators' do
+        it 'decorates as expected' do
+          node = Grom::Node.new(statements, Parliament::Grom::Decorator)
+          expect(node).to be_kind_of(Parliament::Grom::Decorator::Person)
+        end
+      end
     end
 
     context 'without statements' do
       it 'raises an ArgumentError' do
-        expect{ Grom::Node.new }.to raise_error(ArgumentError, 'wrong number of arguments (given 0, expected 1)')
+        expect{ Grom::Node.new }.to raise_error(ArgumentError, 'wrong number of arguments (given 0, expected 1..2)')
       end
     end
   end
@@ -95,7 +102,7 @@ describe Grom::Node do
 
     it 'responds to #type' do
       expect{ subject.method(:type) }.not_to raise_error
-      expect(subject.type).to eq('Person')
+      expect(subject.type).to eq('http://example.com/schema/Person')
     end
 
     it 'responds to #forename' do

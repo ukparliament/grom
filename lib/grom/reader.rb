@@ -10,12 +10,13 @@ module Grom
     attr_reader :data, :statements_by_subject, :edges_by_subject, :objects
 
     # @param [String] data n-triple data.
-    def initialize(data)
+    # @param [Module] decorators decorators to use when building Grom::Node objects.
+    def initialize(data, decorators = nil)
       @data = data
 
       read_data
 
-      @objects = Grom::Builder.new(self).objects
+      @objects = Grom::Builder.new(self, decorators).objects
     end
 
     # Reads the n-triple data and separates the statements by subject.
