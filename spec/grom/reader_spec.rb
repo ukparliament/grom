@@ -14,7 +14,27 @@ describe Grom::Reader do
       expect(subject.instance_variable_get(:@data)).to eq(data)
     end
 
-    it 'returns an array of the built objects' do
+    context 'with decorators' do
+      subject(:reader_with_decorators) { Grom::Reader.new(data, Parliament::Grom::Decorator) }
+
+      it 'passes them to Grom::Builder' do
+        expect(Grom::Reader).to receive(:new).with(data, Parliament::Grom::Decorator)
+
+        reader_with_decorators
+      end
+
+      it 'build decorated objects' do
+        expect(reader_with_decorators.objects.first).to be_kind_of(Parliament::Grom::Decorator::Person)
+      end
+    end
+
+    context 'without decorators' do
+      it 'does not build decorated objects' do
+        expect(subject.objects.first).not_to be_kind_of(Parliament::Grom::Decorator::Person)
+      end
+    end
+
+    it 'builds objects' do
       expect(subject.objects.size).to eq(14)
     end
 

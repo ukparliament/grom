@@ -7,8 +7,10 @@ module Grom
     attr_reader :objects
 
     # @param [Grom::Reader] reader a Grom::Reader instance populated with data.
-    def initialize(reader)
+    # @param [Module] decorators a Module that answers to #decorate_with_type(node, type)
+    def initialize(reader, decorators = nil)
       @reader = reader
+      @decorators = decorators
 
       build_objects
     end
@@ -31,7 +33,7 @@ module Grom
       @objects_by_subject = {}
 
       @reader.statements_by_subject.each do |subject, statements|
-        object = Grom::Node.new(statements)
+        object = Grom::Node.new(statements, @decorators)
         @objects_by_subject[subject] = object
         @objects << object
       end

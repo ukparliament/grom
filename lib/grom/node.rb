@@ -9,10 +9,10 @@ module Grom
     attr_reader :statements
 
     # @param [Array] statements an array of n-triple statements.
-    def initialize(statements)
+    def initialize(statements, decorators = nil)
       @statements = statements
 
-      populate
+      populate(decorators)
     end
 
     # Allows the user to access instance variables as methods or raise an error if the variable is not defined.
@@ -78,7 +78,7 @@ module Grom
       instance_variable_set('@graph_id'.to_sym, graph_id)
     end
 
-    def populate
+    def populate(decorators)
       set_graph_id
       @statements.each do |statement|
         predicate = Grom::Helper.get_id(statement.predicate).to_sym
@@ -93,6 +93,8 @@ module Grom
         else
           instance_variable_set("@#{predicate}", object)
         end
+
+        decorators&.decorate_with_type(self, object) if statement.predicate == RDF.type && decorators
       end
     end
   end
