@@ -1,0 +1,25 @@
+<https://id.parliament.uk/9PuVurua> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://id.parliament.uk/schema/StatutoryInstrumentPaper> .
+<https://id.parliament.uk/9PuVurua> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://id.parliament.uk/schema/WorkPackagedThing> .
+<https://id.parliament.uk/9PuVurua> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://id.parliament.uk/schema/LaidThing> .
+<https://id.parliament.uk/9PuVurua> <https://id.parliament.uk/schema/statutoryInstrumentPaperYear> "2018"^^<http://www.w3.org/2001/XMLSchema#gYear> .
+<https://id.parliament.uk/9PuVurua> <https://id.parliament.uk/schema/statutoryInstrumentPaperPrefix> "SI" .
+<https://id.parliament.uk/9PuVurua> <https://id.parliament.uk/schema/statutoryInstrumentPaperNumber> "538"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<https://id.parliament.uk/9PuVurua> <https://id.parliament.uk/schema/statutoryInstrumentPaperName> "Insurance Companies (Taxation of Re-insurance Business) Regulations 2018" .
+<https://id.parliament.uk/9PuVurua> <https://id.parliament.uk/schema/statutoryInstrumentPaperComingIntoForceDate> "2018-06-01+00:00"^^<http://www.w3.org/2001/XMLSchema#date> .
+<https://id.parliament.uk/9PuVurua> <https://id.parliament.uk/schema/workPackagedThingHasWorkPackagedThingWebLink> <http://www.legislation.gov.uk/uksi/2018/538/made> .
+<https://id.parliament.uk/9PuVurua> <https://id.parliament.uk/schema/laidThingHasLaying> <https://id.parliament.uk/2iDuQtrK> .
+<https://id.parliament.uk/9PuVurua> <https://id.parliament.uk/schema/workPackagedThingHasWorkPackage> <https://id.parliament.uk/zhi6ZHnQ> .
+<https://id.parliament.uk/schema/statutoryInstrumentPaperComingIntoForceDate> <http://www.w3.org/2000/01/rdf-schema#label> "statutory instrument paper coming into force date" .
+<https://id.parliament.uk/schema/workPackagedThingHasWorkPackagedThingWebLink> <http://www.w3.org/2000/01/rdf-schema#label> "work packaged thing has work packaged thing web link" .
+<https://id.parliament.uk/zhi6ZHnQ> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://id.parliament.uk/schema/WorkPackage> .
+<https://id.parliament.uk/zhi6ZHnQ> <http://www.w3.org/2000/01/rdf-schema#label> "Work package" .
+<https://id.parliament.uk/zhi6ZHnQ> <https://id.parliament.uk/schema/workPackageHasProcedure> <https://id.parliament.uk/5S6p4YsP> .
+<https://id.parliament.uk/2iDuQtrK> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://id.parliament.uk/schema/Laying> .
+<https://id.parliament.uk/2iDuQtrK> <https://id.parliament.uk/schema/layingDate> "2018-04-30+00:00"^^<http://www.w3.org/2001/XMLSchema#date> .
+<https://id.parliament.uk/2iDuQtrK> <https://id.parliament.uk/schema/layingHasLayingBody> <https://id.parliament.uk/79sn5e3n> .
+<https://id.parliament.uk/schema/layingDate> <http://www.w3.org/2000/01/rdf-schema#label> "laying date" .
+<https://id.parliament.uk/5S6p4YsP> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://id.parliament.uk/schema/Procedure> .
+<https://id.parliament.uk/5S6p4YsP> <https://id.parliament.uk/schema/procedureName> "Made negative" .
+<https://id.parliament.uk/79sn5e3n> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://id.parliament.uk/schema/Group> .
+<https://id.parliament.uk/79sn5e3n> <http://www.w3.org/2000/01/rdf-schema#label> "Laying body" .
+<https://id.parliament.uk/79sn5e3n> <https://id.parliament.uk/schema/groupName> "HM Revenue and Customs" .

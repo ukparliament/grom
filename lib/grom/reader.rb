@@ -5,9 +5,10 @@ module Grom
   # @attr_reader [String] data n-triple data.
   # @attr_reader [Hash] statements_by_subject statements grouped by subject.
   # @attr_reader [Hash] edges_by_subject subjects connected to objects which are uris via their predicates.
-  # @attr_reader [Array] objects Grom::Node objects generated from n-triple data.
+  # @attr_reader [Grom::Response] response object containing Grom::Node objects and a Grom::Labels object.
+  # @attr_reader [Hash] labels_by_subject subjects connected to object which are their labels.
   class Reader
-    attr_reader :data, :statements_by_subject, :edges_by_subject, :objects
+    attr_reader :data, :statements_by_subject, :edges_by_subject, :response, :labels_by_subject
 
     # @param [String] data n-triple data.
     # @param [Module] decorators decorators to use when building Grom::Node objects.
@@ -16,7 +17,7 @@ module Grom
 
       read_data
 
-      @objects = Grom::Builder.new(self, decorators).objects
+      @response = Grom::Builder.new(self, decorators).response
     end
 
     # Reads the n-triple data and separates the statements by subject.
@@ -24,14 +25,19 @@ module Grom
     # @return [Grom::Reader] an instance of self.
     def read_data
       @statements_by_subject = {}
-
       @edges_by_subject = {}
+      @labels_by_subject = {}
 
       RDF::NTriples::Reader.new(@data) do |reader|
         reader.each_statement do |statement|
           subject = statement.subject.to_s
 
-          Grom::Helper.lazy_array_insert(@statements_by_subject, subject, statement)
+          # separate statements which are labels from other the statements
+          if statement.predicate == RDF::RDFS.label
+            Grom::Helper.lazy_array_insert(@labels_by_subject, subject, statement.object)
+          else
+            Grom::Helper.lazy_array_insert(@statements_by_subject, subject, statement)
+          end
 
           predicate = statement.predicate.to_s
 

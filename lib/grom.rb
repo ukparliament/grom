@@ -7,6 +7,8 @@ require_relative 'grom/reader'
 require_relative 'grom/node'
 require_relative 'grom/helper'
 require_relative 'grom/builder'
+require_relative 'grom/labels'
+require_relative 'grom/response'
 
 require 'grom/naming_error'
 

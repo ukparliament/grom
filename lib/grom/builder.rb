@@ -3,8 +3,9 @@ module Grom
   #
   # @since 0.1.0
   # @attr_reader [Array] objects Grom::Node objects generated from n-triple data.
+  # @attr_reader [Grom::Response] response object containing Grom::Node objects and a Grom::Labels object.
   class Builder
-    attr_reader :objects
+    attr_reader :objects, :response
 
     # @param [Grom::Reader] reader a Grom::Reader instance populated with data.
     # @param [Module] decorators a Module that answers to #decorate_with_type(node, type)
@@ -12,17 +13,17 @@ module Grom
       @reader = reader
       @decorators = decorators
 
-      build_objects
+      @response = build_objects
     end
 
     # Builds and links Grom::Node objects from n-triple data.
     #
-    # @return [Array] array of linked Grom::Node objects.
+    # @return [Grom::Response] object containing linked Grom::Node objects and a Grom::Labels object.
     def build_objects
       build_objects_by_subject
       link_objects
 
-      @objects
+      Grom::Response.new(@objects, Grom::Labels.new(@reader.labels_by_subject))
     end
 
     # Builds Grom::Node objects from n-triple data grouping by their subject.
